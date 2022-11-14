@@ -15,6 +15,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 public class ToDoActivity extends AppCompatActivity implements AddTaskDialogFragment.AddTaskListener{
@@ -85,7 +86,7 @@ public class ToDoActivity extends AppCompatActivity implements AddTaskDialogFrag
                 Iterator iterator = snapshot.getChildren().iterator();
                 while(iterator.hasNext()){
                     DataSnapshot curTime = (DataSnapshot) iterator.next();
-                    times.add((double)curTime.getValue());
+                    times.add(Double.parseDouble(curTime.getValue().toString()));
                 }
             }
 
@@ -98,11 +99,21 @@ public class ToDoActivity extends AppCompatActivity implements AddTaskDialogFrag
 
     // Adding a new task
     public void showAddTaskDialog(){
-
+        AddTaskDialogFragment fragment = new AddTaskDialogFragment();
+        fragment.setCancelable(true);
+        fragment.show(getSupportFragmentManager(), "Create Task");
     }
 
     @Override
     public void onDialogPositiveClick(String name, double time) {
+        // Update task and time lists
+        tasks.add(name);
+        times.add(time);
 
+        // Push changes to Firebase
+        HashMap<String, Object> info = new HashMap<String, Object>();
+        info.put("Tasks", tasks);
+        info.put("Times", times);
+        todoRef.setValue(info);
     }
 }
