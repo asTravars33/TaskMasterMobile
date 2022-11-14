@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -37,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
     private FirebaseAuth auth;
     private DatabaseReference rootRef;
     private DatabaseReference userRef;
-    private DatabaseReference todoRef;
     private String userId;
 
     @Override
@@ -50,13 +50,9 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
 
         // Firebase info
         auth = FirebaseAuth.getInstance();
-        System.out.println("User thing: " + auth.getCurrentUser());
         userId = auth.getCurrentUser().getUid();
         rootRef = FirebaseDatabase.getInstance().getReference();
         userRef = rootRef.child("Users").child(userId);
-        todoRef = rootRef.child("ToDos");
-
-        System.out.println(userRef);
 
         // Instantiate the journal cards
         showTodos();
@@ -140,6 +136,9 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
     // Going to a to-do list
     public void showTodo(ToDo target){
         System.out.println(target.getTags());
+        Intent intent = new Intent(MainActivity.this, ToDoActivity.class);
+        intent.putExtra("key", target.getTodoKey());
+        startActivity(intent);
     }
 
     @Override
@@ -154,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
             date = dateFormat.format(curDate);
         }
         // Update the user's list of todos in Firebase
-        String nextJournalKey = userRef.child("ToDos").push().getKey();
+        String nextTodoKey = userRef.child("ToDos").push().getKey();
         HashMap<String, Object> info = new HashMap<String, Object>();
         info.put("Title", title);
         info.put("Date", date);
@@ -162,9 +161,12 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
         tags.add("Thing");
         tags.add("Thing2"); // TODO: Remove thing and thing2
         info.put("Tags", tags);
-        info.put("Tasks", new ArrayList<String>());
-        info.put("Times", new ArrayList<Double>());
-        userRef.child("ToDos").child(nextJournalKey).setValue(info);
+        userRef.child("ToDos").child(nextTodoKey).setValue(info);
+        // Update the list of all to-do pages in Firebase
+        HashMap<String, Object> pageInfo = new HashMap<String, Object>();
+        pageInfo.put("Tasks", new ArrayList<String>());
+        pageInfo.put("Times", new ArrayList<Double>());
+        rootRef.child("TodoPages").child(nextTodoKey).setValue(pageInfo);
     }
 
     // Moving to other pages

@@ -28,6 +28,11 @@
             android:parentActivityName=".LoginActivity">
 
         </activity>
+        <activity
+            android:name=".ToDoActivity"
+            android:parentActivityName=".MainActivity">
+
+        </activity>
     </application>
 
 </manifest>
