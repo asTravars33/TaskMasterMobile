@@ -3,11 +3,16 @@ package com.wangjessica.taskmaster;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,10 +33,13 @@ public class ToDoActivity extends AppCompatActivity implements AddTaskDialogFrag
     // Task and time information
     private ArrayList<String> tasks;
     private ArrayList<Double> times;
+    private int lastAddedIdx = 0;
+    private boolean submitted=false;
 
     // Layout variables
     Button addTaskButton;
     Button startQuestButton;
+    LinearLayout todoPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -53,6 +61,7 @@ public class ToDoActivity extends AppCompatActivity implements AddTaskDialogFrag
         System.out.println(times);
 
         // Instantiate layout components
+        todoPage = findViewById(R.id.todo_page);
         addTaskButton = findViewById(R.id.add_task_button);
         startQuestButton = findViewById(R.id.start_quest_button);
         addTaskButton.setOnClickListener(new View.OnClickListener() {
@@ -64,15 +73,27 @@ public class ToDoActivity extends AppCompatActivity implements AddTaskDialogFrag
     }
 
     // Get the existing list of tasks and times
+    // TODO: Allow the user to remove tasks
     public void instantiateTasksTimes(){
-        todoRef.child("Tasks").addValueEventListener(new ValueEventListener() {
+        todoRef.child("Tasks").addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Iterator iterator = snapshot.getChildren().iterator();
-                while(iterator.hasNext()){
-                    DataSnapshot curTask = (DataSnapshot) iterator.next();
-                    tasks.add(curTask.getValue().toString());
-                }
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                tasks.add(snapshot.getValue().toString());
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
             }
 
             @Override
@@ -80,14 +101,26 @@ public class ToDoActivity extends AppCompatActivity implements AddTaskDialogFrag
 
             }
         });
-        todoRef.child("Times").addValueEventListener(new ValueEventListener() {
+        todoRef.child("Times").addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Iterator iterator = snapshot.getChildren().iterator();
-                while(iterator.hasNext()){
-                    DataSnapshot curTime = (DataSnapshot) iterator.next();
-                    times.add(Double.parseDouble(curTime.getValue().toString()));
-                }
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                times.add(Double.parseDouble(snapshot.getValue().toString()));
+                displayNewTaskTimes();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
             }
 
             @Override
@@ -115,5 +148,46 @@ public class ToDoActivity extends AppCompatActivity implements AddTaskDialogFrag
         info.put("Tasks", tasks);
         info.put("Times", times);
         todoRef.setValue(info);
+
+        submitted = true;
+    }
+
+    // Displaying tasks and times
+    public void displayNewTaskTimes(){
+        // Remove extra
+        if(submitted){
+            times.remove(times.size()-1);
+            tasks.remove(tasks.size()-1);
+        }
+        // Add the layouts of tasks not yet done
+        for(int i=lastAddedIdx; i<times.size(); i++){
+            displayNewTaskTime(i);
+        }
+        lastAddedIdx = times.size();
+    }
+    public void displayNewTaskTime(int idx){
+        // Container for task and time
+        LinearLayout ll = new LinearLayout(this);
+        ll.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        ll.setOrientation(LinearLayout.HORIZONTAL);
+        ll.setWeightSum(1f);
+        // Add task
+        TextView taskTv = new TextView(this);
+        LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f);
+        taskTv.setLayoutParams(lp1);
+        taskTv.setText(tasks.get(idx));
+        taskTv.setPadding(30, 10, 0, 10);
+        taskTv.setTextColor(getResources().getColor(R.color.white, null));
+        ll.addView(taskTv);
+        // Add time
+        TextView timeTv = new TextView(this);
+        LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f);
+        timeTv.setLayoutParams(lp2);
+        timeTv.setText(times.get(idx).toString());
+        timeTv.setPadding(0, 10, 0, 10);
+        timeTv.setTextColor(getResources().getColor(R.color.white, null));
+        ll.addView(timeTv);
+        // Add ll to main view
+        todoPage.addView(ll);
     }
 }

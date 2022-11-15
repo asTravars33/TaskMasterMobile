@@ -51,14 +51,14 @@
                         android:textSize="20sp"
                         android:textColor="@color/white"
                         android:layout_height="wrap_content"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_weight="0.7" />
                     <TextView
                         android:text="@string/todo_header2"
                         android:textSize="20sp"
                         android:textColor="@color/white"
                         android:layout_height="wrap_content"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_weight="0.3" />
                 </LinearLayout>
             </LinearLayout>

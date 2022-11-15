@@ -77,9 +77,8 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
                     String curTitle = todo.child("Title").getValue().toString();
                     String curDate = todo.child("Date").getValue().toString();
                     // Get the tags
-                    ArrayList<String> curTags = new ArrayList<String>(); // TODO: WHAT TO DO ABOUT THE TAGS??? STORAGE? RETRIEVAL? ARRAY LIST? HELP
+                    ArrayList<String> curTags = new ArrayList<String>();
                     getTags(todo.getKey(), curTags);
-                    System.out.println(curTags);
                     todoList.add(new ToDo(curTitle, curDate, curTags, snapshot.getKey()));
                 }
 
