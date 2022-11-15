@@ -11,16 +11,18 @@
         android:layout_height="wrap_content"
         app:layout_constraintGuide_percent="0.15"
         android:orientation="horizontal" />
+
     <TextView
         android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Profile"
         android:textSize="34sp"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/profile_img"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/profile_img" />
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.sdsmdg.harjot.vectormaster.VectorMasterView
         android:id="@+id/profile_img"
         android:layout_width="0dp"
@@ -29,9 +31,46 @@
         app:layout_constraintWidth_percent="0.6"
         app:layout_constraintHeight_percent="0.4"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/path_selection"
         app:layout_constraintTop_toBottomOf="@id/title"
         app:layout_constraintBottom_toTopOf="@id/color_pick" />
+    <LinearLayout
+        android:id="@+id/path_selection"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.4"
+        app:layout_constraintWidth_percent="0.4"
+        app:layout_constraintLeft_toRightOf="@id/profile_img"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintBottom_toTopOf="@id/color_pick"
+        app:weightSum="1"
+        android:orientation="vertical">
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/button_path0"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.25"
+            android:text="Skin" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/button_path1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.25"
+            android:text="Skin" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/button_path2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.25"
+            android:text="Skin" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/button_path3"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.25"
+            android:text="Skin" />
+    </LinearLayout>
     <LinearLayout
         android:id="@+id/color_pick"
         android:layout_width="0dp"
