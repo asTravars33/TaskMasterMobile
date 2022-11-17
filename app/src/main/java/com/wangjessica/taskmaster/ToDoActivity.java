@@ -1,0 +1,193 @@
+package com.wangjessica.taskmaster;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
+public class ToDoActivity extends AppCompatActivity implements AddTaskDialogFragment.AddTaskListener{
+
+    // Firebase Variables
+    private DatabaseReference rootRef;
+    private DatabaseReference todoRef;
+    private String todoKey;
+
+    // Task and time information
+    private ArrayList<String> tasks;
+    private ArrayList<Double> times;
+    private int lastAddedIdx = 0;
+    private boolean submitted=false;
+
+    // Layout variables
+    Button addTaskButton;
+    Button startQuestButton;
+    LinearLayout todoPage;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.todo_list);
+
+        // Get the Firebase Database references
+        rootRef = FirebaseDatabase.getInstance().getReference();
+        Intent intent = getIntent();
+        todoKey = intent.getStringExtra("key");
+        todoRef = rootRef.child("TodoPages").child(todoKey);
+
+        // Get the current tasks and times
+        tasks = new ArrayList<String>();
+        times = new ArrayList<Double>();
+        instantiateTasksTimes();
+
+        System.out.println(tasks);
+        System.out.println(times);
+
+        // Instantiate layout components
+        todoPage = findViewById(R.id.todo_page);
+        addTaskButton = findViewById(R.id.add_task_button);
+        startQuestButton = findViewById(R.id.start_quest_button);
+        addTaskButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddTaskDialog();
+            }
+        });
+    }
+
+    // Get the existing list of tasks and times
+    // TODO: Allow the user to remove tasks
+    public void instantiateTasksTimes(){
+        todoRef.child("Tasks").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                tasks.add(snapshot.getValue().toString());
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        todoRef.child("Times").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                times.add(Double.parseDouble(snapshot.getValue().toString()));
+                displayNewTaskTimes();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    // Adding a new task
+    public void showAddTaskDialog(){
+        AddTaskDialogFragment fragment = new AddTaskDialogFragment();
+        fragment.setCancelable(true);
+        fragment.show(getSupportFragmentManager(), "Create Task");
+    }
+
+    @Override
+    public void onDialogPositiveClick(String name, double time) {
+        // Update task and time lists
+        tasks.add(name);
+        times.add(time);
+
+        // Push changes to Firebase
+        HashMap<String, Object> info = new HashMap<String, Object>();
+        info.put("Tasks", tasks);
+        info.put("Times", times);
+        todoRef.setValue(info);
+
+        submitted = true;
+    }
+
+    // Displaying tasks and times
+    public void displayNewTaskTimes(){
+        // Remove extra
+        if(submitted){
+            times.remove(times.size()-1);
+            tasks.remove(tasks.size()-1);
+        }
+        // Add the layouts of tasks not yet done
+        for(int i=lastAddedIdx; i<times.size(); i++){
+            displayNewTaskTime(i);
+        }
+        lastAddedIdx = times.size();
+    }
+    public void displayNewTaskTime(int idx){
+        // Container for task and time
+        LinearLayout ll = new LinearLayout(this);
+        ll.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        ll.setOrientation(LinearLayout.HORIZONTAL);
+        ll.setWeightSum(1f);
+        // Add task
+        TextView taskTv = new TextView(this);
+        LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f);
+        taskTv.setLayoutParams(lp1);
+        taskTv.setText(tasks.get(idx));
+        taskTv.setPadding(30, 10, 0, 10);
+        taskTv.setTextColor(getResources().getColor(R.color.white, null));
+        ll.addView(taskTv);
+        // Add time
+        TextView timeTv = new TextView(this);
+        LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f);
+        timeTv.setLayoutParams(lp2);
+        timeTv.setText(times.get(idx).toString());
+        timeTv.setPadding(0, 10, 0, 10);
+        timeTv.setTextColor(getResources().getColor(R.color.white, null));
+        ll.addView(timeTv);
+        // Add ll to main view
+        todoPage.addView(ll);
+    }
+}
