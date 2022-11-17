@@ -26,6 +26,7 @@ public class ProfileActivity extends AppCompatActivity{
     private Button colorButton;
     private EditText nameInput;
     private View colorPreview;
+    VectorMasterView avatarVector;
     int curColor = 0;
     private ArrayList<Integer> curColors;
 
@@ -60,14 +61,15 @@ public class ProfileActivity extends AppCompatActivity{
             }
         });
 
-        // Avatar vectors
-        VectorMasterView avatarVector = (VectorMasterView) findViewById(R.id.profile_img);
-        for(int i=0; i<4; i++){
-            PathModel path = avatarVector.getPathModelByName("path"+i);
-            path.setStrokeColor(curColor); // TODO: Yes but do this on click! worst case scenario: make invisible buttons
-        }
-
+        // Avatar vector
+        avatarVector = (VectorMasterView) findViewById(R.id.profile_img);
+        curColors = new ArrayList<Integer>();
+        curColors.add(0);
+        curColors.add(0);
+        curColors.add(0);
+        curColors.add(0);
     }
+    // Picking colors
     public void openColorPicker(){
         final AmbilWarnaDialog colorPicker = new AmbilWarnaDialog(this, 0, new AmbilWarnaDialog.OnAmbilWarnaListener() {
             @Override
@@ -82,6 +84,19 @@ public class ProfileActivity extends AppCompatActivity{
             }
         });
         colorPicker.show();
+    }
+
+    // Updating avatar appearance
+    public void updateAvatar(View view){
+        // Which part of avatar?
+        Button clicked = (Button) view;
+        String pathName = clicked.getTag().toString();
+        // Change the path's color
+        PathModel path = avatarVector.getPathModelByName(pathName);
+        path.setStrokeColor(curColor);
+        // Store the changed color
+        int idx = Integer.parseInt(pathName.substring(pathName.length()-1, pathName.length()));
+        curColors.set(idx, curColor);
     }
     public void saveUpdates(View view) {
         String name = nameInput.getText().toString();

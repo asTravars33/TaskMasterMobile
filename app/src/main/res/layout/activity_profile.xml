@@ -44,32 +44,40 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title"
         app:layout_constraintBottom_toTopOf="@id/color_pick"
-        app:weightSum="1"
+        android:weightSum="1"
         android:orientation="vertical">
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_path0"
+            android:tag="path0"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.25"
+            android:onClick="updateAvatar"
             android:text="Skin" />
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_path1"
+            android:tag="path1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.25"
-            android:text="Skin" />
+            android:onClick="updateAvatar"
+            android:text="Shirt" />
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_path2"
+            android:tag="path2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.25"
-            android:text="Skin" />
+            android:onClick="updateAvatar"
+            android:text="Pants" />
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_path3"
+            android:tag="path3"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.25"
-            android:text="Skin" />
+            android:onClick="updateAvatar"
+            android:text="Shoes" />
     </LinearLayout>
     <LinearLayout
         android:id="@+id/color_pick"
