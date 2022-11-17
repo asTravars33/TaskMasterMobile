@@ -1,7 +1,7 @@
 package com.wangjessica.taskmaster;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.os.Bundle;
 import android.view.View;
@@ -9,9 +9,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.devs.vectorchildfinder.VectorChildFinder;
+import com.devs.vectorchildfinder.VectorDrawableCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
 import com.sdsmdg.harjot.vectormaster.VectorMasterView;
 import com.sdsmdg.harjot.vectormaster.models.PathModel;
 
@@ -26,7 +29,9 @@ public class ProfileActivity extends AppCompatActivity{
     private Button colorButton;
     private EditText nameInput;
     private View colorPreview;
-    VectorMasterView avatarVector;
+    VectorChildFinder vector;
+
+    private ImageView profileImg;
     int curColor = 0;
     private ArrayList<Integer> curColors;
 
@@ -40,7 +45,8 @@ public class ProfileActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        setContentView(R.layout.activity_profile);
 
         // Instantiate firebase
         rootRef = FirebaseDatabase.getInstance().getReference();
@@ -62,7 +68,8 @@ public class ProfileActivity extends AppCompatActivity{
         });
 
         // Avatar vector
-        avatarVector = (VectorMasterView) findViewById(R.id.profile_img);
+        profileImg = findViewById(R.id.profile_img);
+        //avatarVector = (VectorMasterView) findViewById(R.id.profile_img);
         curColors = new ArrayList<Integer>();
         curColors.add(0);
         curColors.add(0);
@@ -91,12 +98,15 @@ public class ProfileActivity extends AppCompatActivity{
         // Which part of avatar?
         Button clicked = (Button) view;
         String pathName = clicked.getTag().toString();
-        // Change the path's color
-        PathModel path = avatarVector.getPathModelByName(pathName);
-        path.setStrokeColor(curColor);
         // Store the changed color
         int idx = Integer.parseInt(pathName.substring(pathName.length()-1, pathName.length()));
         curColors.set(idx, curColor);
+        // Update the path colors
+        VectorChildFinder vector = new VectorChildFinder(this, R.drawable.avatar, profileImg);
+        for(int i=0; i<curColors.size(); i++){
+            VectorDrawableCompat.VFullPath path = vector.findPathByName("path"+i);
+            path.setFillColor(curColors.get(i));
+        }
     }
     public void saveUpdates(View view) {
         String name = nameInput.getText().toString();

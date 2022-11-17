@@ -23,11 +23,12 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.sdsmdg.harjot.vectormaster.VectorMasterView
+    <ImageView
         android:id="@+id/profile_img"
         android:layout_width="0dp"
+        android:background="@color/main"
         android:layout_height="0dp"
-        app:vector_src="@drawable/avatar"
+        app:srcCompat="@drawable/avatar"
         app:layout_constraintWidth_percent="0.6"
         app:layout_constraintHeight_percent="0.4"
         app:layout_constraintLeft_toLeftOf="parent"
