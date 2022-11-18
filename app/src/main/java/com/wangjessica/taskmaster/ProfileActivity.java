@@ -15,9 +15,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import com.sdsmdg.harjot.vectormaster.VectorMasterView;
-import com.sdsmdg.harjot.vectormaster.models.PathModel;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -71,10 +68,10 @@ public class ProfileActivity extends AppCompatActivity{
         profileImg = findViewById(R.id.profile_img);
         //avatarVector = (VectorMasterView) findViewById(R.id.profile_img);
         curColors = new ArrayList<Integer>();
-        curColors.add(0);
-        curColors.add(0);
-        curColors.add(0);
-        curColors.add(0);
+        curColors.add(-1);
+        curColors.add(-1);
+        curColors.add(-1);
+        curColors.add(-1);
     }
     // Picking colors
     public void openColorPicker(){
