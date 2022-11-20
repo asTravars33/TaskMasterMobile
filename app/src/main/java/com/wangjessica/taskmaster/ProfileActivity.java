@@ -73,6 +73,10 @@ public class ProfileActivity extends AppCompatActivity{
         curColors.add(-1);
         curColors.add(-1);
     }
+    // Populate the profile entries with existing settings
+    public void fillCurrent(){
+
+    }
     // Picking colors
     public void openColorPicker(){
         final AmbilWarnaDialog colorPicker = new AmbilWarnaDialog(this, 0, new AmbilWarnaDialog.OnAmbilWarnaListener() {
