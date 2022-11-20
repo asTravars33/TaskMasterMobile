@@ -193,17 +193,36 @@ public class ToDoActivity extends AppCompatActivity implements AddTaskDialogFrag
         LinearLayout.LayoutParams buttonLayout = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 0.1f);
         delButton.setText("-");
         delButton.setLayoutParams(buttonLayout);
+        delButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                delTask(view);
+            }
+        });
         ll.addView(delButton);
         // Up button
         Button upButton = new Button(this);
-        upButton.setText(idx);
+        upButton.setTag(idx);
         upButton.setText("U");
         upButton.setLayoutParams(buttonLayout);
+        upButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                moveTaskUp(view);
+            }
+        });
         ll.addView(upButton);
         // Down button
         Button downButton = new Button(this);
+        downButton.setTag(idx);
         downButton.setText("D");
         downButton.setLayoutParams(buttonLayout);
+        downButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                moveTaskDown(view);
+            }
+        });
         ll.addView(downButton);
         // Add ll to main view
         todoPage.addView(ll);
@@ -217,6 +236,31 @@ public class ToDoActivity extends AppCompatActivity implements AddTaskDialogFrag
         times.remove(idx);
         // Update Firebase
         recalFirebase();
+        // Update the layout
+        lastAddedIdx = 0;
+        todoPage.removeViews(1, todoPage.getChildCount()-1);
+        displayNewTaskTimes();
+    }
+    public void moveTaskUp(View view){
+        int idx = (Integer) view.getTag();
+        swapTasks(idx, idx-1);
+    }
+    public void moveTaskDown(View view){
+        int idx = (Integer) view.getTag();
+        swapTasks(idx, idx+1);
+    }
+    public void swapTasks(int idx1, int idx2){
+        // Error check
+        if(idx1<0 || idx2 <0 || idx1>=tasks.size() || idx2>=tasks.size()){
+            return;
+        }
+        // Swap the times
+        String task1 = tasks.get(idx1);
+        double time1 = times.get(idx1);
+        tasks.set(idx1, tasks.get(idx2));
+        times.set(idx1, times.get(idx2));
+        tasks.set(idx2, task1);
+        times.set(idx2, time1);
         // Update the layout
         lastAddedIdx = 0;
         todoPage.removeViews(1, todoPage.getChildCount()-1);
