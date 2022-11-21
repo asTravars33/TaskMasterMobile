@@ -173,7 +173,8 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
         // don't do anything; already on the page
     }
     public void gotoGroups(View view){
-
+        Intent intent = new Intent(MainActivity.this, GroupsActivity.class);
+        startActivity(intent);
     }
     public void gotoProfile(View view){
         Intent intent = new Intent(MainActivity.this, ProfileActivity.class);

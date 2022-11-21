@@ -173,7 +173,7 @@ public class ToDoActivity extends AppCompatActivity implements AddTaskDialogFrag
         ll.setWeightSum(1f);
         // Add task
         TextView taskTv = new TextView(this);
-        LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f);
+        LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 0.6f);
         taskTv.setLayoutParams(lp1);
         taskTv.setText(tasks.get(idx));
         taskTv.setPadding(30, 10, 0, 10);
@@ -181,13 +181,96 @@ public class ToDoActivity extends AppCompatActivity implements AddTaskDialogFrag
         ll.addView(taskTv);
         // Add time
         TextView timeTv = new TextView(this);
-        LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f);
+        LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 0.1f);
         timeTv.setLayoutParams(lp2);
         timeTv.setText(times.get(idx).toString());
         timeTv.setPadding(0, 10, 0, 10);
         timeTv.setTextColor(getResources().getColor(R.color.white, null));
         ll.addView(timeTv);
+        // Add button controls
+        Button delButton = new Button(this);
+        delButton.setTag(idx);
+        LinearLayout.LayoutParams buttonLayout = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 0.1f);
+        delButton.setText("-");
+        delButton.setLayoutParams(buttonLayout);
+        delButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                delTask(view);
+            }
+        });
+        ll.addView(delButton);
+        // Up button
+        Button upButton = new Button(this);
+        upButton.setTag(idx);
+        upButton.setText("U");
+        upButton.setLayoutParams(buttonLayout);
+        upButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                moveTaskUp(view);
+            }
+        });
+        ll.addView(upButton);
+        // Down button
+        Button downButton = new Button(this);
+        downButton.setTag(idx);
+        downButton.setText("D");
+        downButton.setLayoutParams(buttonLayout);
+        downButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                moveTaskDown(view);
+            }
+        });
+        ll.addView(downButton);
         // Add ll to main view
         todoPage.addView(ll);
+    }
+
+    // Rearranging tasks
+    public void delTask(View view){
+        // Update local arrayLists
+        int idx = (Integer) view.getTag();
+        tasks.remove(idx);
+        times.remove(idx);
+        // Update Firebase
+        recalFirebase();
+        // Update the layout
+        lastAddedIdx = 0;
+        todoPage.removeViews(1, todoPage.getChildCount()-1);
+        displayNewTaskTimes();
+    }
+    public void moveTaskUp(View view){
+        int idx = (Integer) view.getTag();
+        swapTasks(idx, idx-1);
+        recalFirebase();
+    }
+    public void moveTaskDown(View view){
+        int idx = (Integer) view.getTag();
+        swapTasks(idx, idx+1);
+    }
+    public void swapTasks(int idx1, int idx2){
+        // Error check
+        if(idx1<0 || idx2 <0 || idx1>=tasks.size() || idx2>=tasks.size()){
+            return;
+        }
+        // Swap the times
+        String task1 = tasks.get(idx1);
+        double time1 = times.get(idx1);
+        tasks.set(idx1, tasks.get(idx2));
+        times.set(idx1, times.get(idx2));
+        tasks.set(idx2, task1);
+        times.set(idx2, time1);
+        // Update the layout
+        lastAddedIdx = 0;
+        todoPage.removeViews(1, todoPage.getChildCount()-1);
+        displayNewTaskTimes();
+    }
+    public void recalFirebase(){
+        HashMap<String, Object> info = new HashMap<String, Object>();
+        info.put("Tasks", tasks);
+        info.put("Times", times);
+        todoRef.setValue(info);
     }
 }
