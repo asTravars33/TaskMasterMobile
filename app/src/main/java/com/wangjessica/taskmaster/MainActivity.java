@@ -174,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
     }
     public void gotoGroups(View view){
         Intent intent = new Intent(MainActivity.this, GroupsActivity.class);
+        System.out.println("Starting Groups intent");
         startActivity(intent);
     }
     public void gotoProfile(View view){
