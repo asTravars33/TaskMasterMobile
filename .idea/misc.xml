@@ -7,16 +7,17 @@
         <entry key="..\:/Users/1795929/AndroidStudioProjects/TaskMaster/app/src/main/res/layout/activity_login.xml" value="0.1661600810536981" />
         <entry key="..\:/Users/1795929/AndroidStudioProjects/TaskMaster/app/src/main/res/layout/activity_main.xml" value="0.13269927536231885" />
         <entry key="..\:/Users/1795929/AndroidStudioProjects/TaskMaster/app/src/main/res/layout/activity_register.xml" value="0.1661600810536981" />
-        <entry key="..\:/Users/1795929/Downloads/TaskMaster-20221110T180033Z-001/TaskMaster/app/src/main/res/drawable/avatar.xml" value="0.218" />
-        <entry key="..\:/Users/1795929/Downloads/TaskMaster-20221110T180033Z-001/TaskMaster/app/src/main/res/drawable/avatar_old.xml" value="0.2365" />
         <entry key="..\:/Users/1795929/Downloads/TaskMaster-20221110T180033Z-001/TaskMaster/app/src/main/res/layout/activity_main.xml" value="0.2128623188405797" />
-        <entry key="..\:/Users/1795929/Downloads/TaskMaster-20221110T180033Z-001/TaskMaster/app/src/main/res/layout/activity_profile.xml" value="0.5" />
-        <entry key="..\:/Users/1795929/Downloads/TaskMaster-20221110T180033Z-001/TaskMaster/app/src/main/res/layout/add_task_form.xml" value="0.7730263157894737" />
-        <entry key="..\:/Users/1795929/Downloads/TaskMaster-20221110T180033Z-001/TaskMaster/app/src/main/res/layout/todo_list.xml" value="0.20871327254305977" />
         <entry key="..\:/Users/annik/AndroidStudioProjects/TaskMaster/app/src/main/res/layout/activity_main.xml" value="0.19293478260869565" />
         <entry key="..\:/Users/annik/AndroidStudioProjects/TaskMaster/app/src/main/res/layout/app_bar.xml" value="0.26927083333333335" />
         <entry key="..\:/Users/annik/AndroidStudioProjects/TaskMaster/app/src/main/res/layout/create_todo_form.xml" value="0.25" />
         <entry key="..\:/Users/annik/AndroidStudioProjects/TaskMaster/app/src/main/res/layout/todos_cardview.xml" value="0.19293478260869565" />
+        <entry key="..\:/Users/annik/AndroidStudioProjects/TaskMasterMobile/app/src/main/res/drawable/avatar.xml" value="0.235" />
+        <entry key="..\:/Users/annik/AndroidStudioProjects/TaskMasterMobile/app/src/main/res/drawable/avatar_old.xml" value="0.235" />
+        <entry key="..\:/Users/annik/AndroidStudioProjects/TaskMasterMobile/app/src/main/res/layout/activity_profile.xml" value="0.25" />
+        <entry key="..\:/Users/annik/AndroidStudioProjects/TaskMasterMobile/app/src/main/res/layout/create_todo_form.xml" value="0.26927083333333335" />
+        <entry key="..\:/Users/annik/AndroidStudioProjects/TaskMasterMobile/app/src/main/res/layout/profile.xml" value="0.26927083333333335" />
+        <entry key="..\:/Users/annik/AndroidStudioProjects/TaskMasterMobile/app/src/main/res/layout/todo_list.xml" value="0.1" />
       </map>
     </option>
   </component>
