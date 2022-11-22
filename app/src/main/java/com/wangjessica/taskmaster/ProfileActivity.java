@@ -91,18 +91,16 @@ public class ProfileActivity extends AppCompatActivity{
         userRef.child("Profile").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Iterator iterator = snapshot.getChildren().iterator();
                 // User's coin count
-                coinCnt = Integer.parseInt(((DataSnapshot)iterator.next()).getValue().toString());
+                coinCnt = Integer.parseInt(snapshot.child("Coins").getValue().toString());
                 coinsLabel.setText(""+coinCnt);
                 // Avatar colors
-                curColors.set(0, Integer.parseInt(((DataSnapshot)iterator.next()).getValue().toString()));
-                curColors.set(1, Integer.parseInt(((DataSnapshot)iterator.next()).getValue().toString()));
-                curColors.set(2, Integer.parseInt(((DataSnapshot)iterator.next()).getValue().toString()));
-                curColors.set(3, Integer.parseInt(((DataSnapshot)iterator.next()).getValue().toString()));
+                for(int i=0; i<4; i++){
+                    curColors.set(i, Integer.parseInt(snapshot.child("Color "+i).getValue().toString()));
+                }
                 updateAvatarAll();
                 // User's name
-                String name = ((DataSnapshot)iterator.next()).getValue().toString();
+                String name = snapshot.child("Name").getValue().toString();
                 nameInput.setText(name);
             }
 

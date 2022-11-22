@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 // Create list of the user's current to-do lists
                 List<ToDo> todoList = new ArrayList<ToDo>();
-                todoList.add(new ToDo("Add New", "", new ArrayList<String>(), ""));
+                todoList.add(new ToDo("Add New", "", new ArrayList<String>(), "", -1));
 
                 // Add the journals to the list
                 Iterator iterator = snapshot.getChildren().iterator();
@@ -76,10 +76,11 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
                     // Get this to do's title and date
                     String curTitle = todo.child("Title").getValue().toString();
                     String curDate = todo.child("Date").getValue().toString();
+                    int curColor = Integer.parseInt(todo.child("Color").getValue().toString());
                     // Get the tags
                     ArrayList<String> curTags = new ArrayList<String>();
                     getTags(todo.getKey(), curTags);
-                    todoList.add(new ToDo(curTitle, curDate, curTags, snapshot.getKey()));
+                    todoList.add(new ToDo(curTitle, curDate, curTags, snapshot.getKey(), curColor));
                 }
 
                 // Display journals on RecyclerView
