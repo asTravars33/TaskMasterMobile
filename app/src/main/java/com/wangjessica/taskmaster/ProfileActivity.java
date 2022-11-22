@@ -94,7 +94,7 @@ public class ProfileActivity extends AppCompatActivity{
                 Iterator iterator = snapshot.getChildren().iterator();
                 // User's coin count
                 coinCnt = Integer.parseInt(((DataSnapshot)iterator.next()).getValue().toString());
-                coinsLabel.setText(coinCnt);
+                coinsLabel.setText(""+coinCnt);
                 // Avatar colors
                 curColors.set(0, Integer.parseInt(((DataSnapshot)iterator.next()).getValue().toString()));
                 curColors.set(1, Integer.parseInt(((DataSnapshot)iterator.next()).getValue().toString()));

@@ -97,7 +97,7 @@ public class RegisterActivity extends AppCompatActivity {
         info.put("Color 2", -1);
         info.put("Color 3", -1);
         info.put("Name", "User");
-        rootRef.child("User").child(userId).child("Profile").setValue(info);
+        rootRef.child("Users").child(userId).child("Profile").setValue(info);
     }
     private void initializeFields() {
         createAccountButton = findViewById(R.id.register_button);
