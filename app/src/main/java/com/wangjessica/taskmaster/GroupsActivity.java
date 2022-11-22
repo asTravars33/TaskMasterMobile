@@ -1,7 +1,9 @@
 package com.wangjessica.taskmaster;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -128,5 +130,18 @@ public class GroupsActivity extends AppCompatActivity implements CreateGroupDial
     // Entering a created group
     public void gotoGroup(Group group){
         // TODO: fill in this section
+    }
+
+    // Moving to other pages
+    public void gotoTodos(View view){
+        Intent intent = new Intent(GroupsActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
+    public void gotoGroups(View view){
+        // Don't do anything; already on the page
+    }
+    public void gotoProfile(View view){
+        Intent intent = new Intent(GroupsActivity.this, ProfileActivity.class);
+        startActivity(intent);
     }
 }
