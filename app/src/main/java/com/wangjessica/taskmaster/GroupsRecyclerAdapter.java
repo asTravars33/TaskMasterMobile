@@ -32,6 +32,7 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
         // Get the capacity info
         holder.capacityCnt.setText("");
         holder.userView.setText(cur.getUserName());
+        holder.cardView.setBackgroundColor(cur.getColor());
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

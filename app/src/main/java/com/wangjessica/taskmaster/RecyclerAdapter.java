@@ -28,6 +28,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     @Override
     public void onBindViewHolder(RecyclerAdapter.MyViewHolder holder, final int position) {
         final ToDo cur = todoList.get(position);
+        holder.cardView.setBackgroundColor(cur.getColor());
         holder.title.setText(cur.getTitle());
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override

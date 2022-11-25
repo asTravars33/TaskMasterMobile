@@ -244,10 +244,12 @@ public class ToDoActivity extends AppCompatActivity implements AddTaskDialogFrag
     public void moveTaskUp(View view){
         int idx = (Integer) view.getTag();
         swapTasks(idx, idx-1);
+        recalFirebase();
     }
     public void moveTaskDown(View view){
         int idx = (Integer) view.getTag();
         swapTasks(idx, idx+1);
+        recalFirebase();
     }
     public void swapTasks(int idx1, int idx2){
         // Error check
@@ -267,6 +269,9 @@ public class ToDoActivity extends AppCompatActivity implements AddTaskDialogFrag
         displayNewTaskTimes();
     }
     public void recalFirebase(){
+        System.out.println("Recalibrating");
+        System.out.println(tasks);
+        System.out.println(times);
         HashMap<String, Object> info = new HashMap<String, Object>();
         info.put("Tasks", tasks);
         info.put("Times", times);

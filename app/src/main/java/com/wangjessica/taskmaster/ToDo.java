@@ -10,17 +10,19 @@ public class ToDo {
     private String title;
     private String date; // date label - default = date created
     private ArrayList<String> tags;
+    private int color;
 
     // Firebase
     private String todoKey;
     private DatabaseReference journalRef;
 
     // Constructor
-    public ToDo(String title, String date, ArrayList<String> tags, String todoKey){
+    public ToDo(String title, String date, ArrayList<String> tags, String todoKey, int color){
         this.title = title;
         this.date = date;
         this.tags = tags;
         this.todoKey = todoKey;
+        this.color = color;
     }
 
     // Getters and setters
@@ -35,5 +37,8 @@ public class ToDo {
     }
     public String getTodoKey(){
         return todoKey;
+    }
+    public int getColor(){
+        return color;
     }
 }
