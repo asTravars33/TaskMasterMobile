@@ -80,6 +80,7 @@
         android:layout_height="wrap_content"
         android:background="@color/accent2"
         android:text="Start Quest"
+        android:onClick="startQuest"
         android:padding="15dp"
         android:textSize="23sp"
         android:textColor="@color/white"

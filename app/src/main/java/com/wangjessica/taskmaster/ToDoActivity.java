@@ -73,7 +73,6 @@ public class ToDoActivity extends AppCompatActivity implements AddTaskDialogFrag
     }
 
     // Get the existing list of tasks and times
-    // TODO: Allow the user to remove tasks
     public void instantiateTasksTimes(){
         todoRef.child("Tasks").addChildEventListener(new ChildEventListener() {
             @Override
@@ -130,6 +129,11 @@ public class ToDoActivity extends AppCompatActivity implements AddTaskDialogFrag
         });
     }
 
+    // Starting a quest with the tasks
+    public void startQuest(View view){
+        Intent intent = new Intent(ToDoActivity.this, QuestMenuActivity.class);
+        startActivity(intent);
+    }
     // Adding a new task
     public void showAddTaskDialog(){
         AddTaskDialogFragment fragment = new AddTaskDialogFragment();
