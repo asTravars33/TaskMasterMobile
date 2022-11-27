@@ -83,7 +83,7 @@ public class GroupsActivity extends AppCompatActivity implements CreateGroupDial
                     int capacity = Integer.parseInt(group.child("Capacity").getValue().toString());
                     int color = Integer.parseInt(group.child("Color").getValue().toString());
                     // Add in the group
-                    groupsList.add(new Group(groupName, userName, snapshot.getKey(), capacity, color));
+                    groupsList.add(new Group(groupName, userName, group.getKey(), capacity, color));
                 }
 
                 // Add to layout with adapter
@@ -129,7 +129,19 @@ public class GroupsActivity extends AppCompatActivity implements CreateGroupDial
 
     // Entering a created group
     public void gotoGroup(Group group){
-        // TODO: fill in this section
+        // Update Firebase
+        String groupKey = group.getGroupKey();
+        if(!userName.equals(group.getUserName())){
+            // The user is already in the group
+            HashMap<String, Object> info = new HashMap<String, Object>();
+            info.put(userName, "");
+            groupsRef.child(groupKey).updateChildren(info);
+        }
+        // Send user to the room
+        Intent intent = new Intent(GroupsActivity.this, GroupSessionActivity.class);
+        intent.putExtra("groupKey", groupKey);
+        intent.putExtra("groupName", group.getTitle());
+        startActivity(intent);
     }
 
     // Moving to other pages

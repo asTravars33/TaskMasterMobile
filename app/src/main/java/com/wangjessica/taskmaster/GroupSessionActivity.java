@@ -1,42 +1,194 @@
 package com.wangjessica.taskmaster;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.view.View;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
-public class GroupSessionActivity extends AppCompatActivity{
+public class GroupSessionActivity extends AppCompatActivity {
 
-    // Layout variables
+    // Layout components
+    LinearLayout chatLayout;
+    EditText messageTxt;
+    ScrollView peopleScroll;
+    LinearLayout peopleLayout;
 
-    // Firebase variables
-    private FirebaseAuth auth;
-    private DatabaseReference rootRef;
-    private DatabaseReference groupRef;
-    private String userName;
+    // Group info
+    ArrayList<String> companions = new ArrayList<String>();
+    String groupName;
+    int groupCapacity;
+    String groupKey;
+    private boolean peopleShowing = false;
+
+    // Firebase info
+    DatabaseReference groupRef;
+    DatabaseReference rootRef;
+    DatabaseReference chatRef;
+    StorageReference storageRef;
+    FirebaseAuth auth;
+    String uId;
+    String myName;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_session);
+
+        // Layout variables
+        chatLayout = findViewById(R.id.chat);
+        messageTxt = findViewById(R.id.message_text);
+        peopleScroll = findViewById(R.id.people_list);
+        peopleLayout = findViewById(R.id.people_list_layout);
+        Button peopleButton = findViewById(R.id.people_button);
+        peopleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!peopleShowing) {
+                    peopleScroll.setVisibility(View.VISIBLE);
+                    peopleShowing = true;
+                }
+                else{
+                    peopleScroll.setVisibility(View.INVISIBLE);
+                    peopleShowing = false;
+                }
+            }
+        });
+
+        // Extract room key data
+        Intent parentIntent = getIntent();
+        groupKey = parentIntent.getStringExtra("groupKey");
+        groupName = parentIntent.getStringExtra("groupName");
+
+        // Firebase info
+        auth = FirebaseAuth.getInstance();
+        uId = auth.getCurrentUser().getUid();
+        rootRef = FirebaseDatabase.getInstance().getReference();
+        groupRef = rootRef.child("Groups").child(groupKey);
+        chatRef = rootRef.child("Chats").child(groupKey);
+        storageRef = FirebaseStorage.getInstance().getReference().child("Profiles");
+        rootRef.child("Users").child(uId).child("Profile").child("Name").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                myName = snapshot.getValue().toString();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        // Get a list of users in this room
+        groupRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Iterator iterator = snapshot.getChildren().iterator();
+                while(iterator.hasNext()){
+                    DataSnapshot curData = ((DataSnapshot) iterator.next());
+                    String cur = curData.getKey();
+                    if(cur.equals("Name")){
+                        groupName = curData.getValue().toString();
+                    }
+                    else if(cur.equals("Capacity")){
+                        groupCapacity = Integer.parseInt(curData.getValue().toString());
+                    }
+                    else if(!cur.equals("User") && !cur.equals("Color")){
+                        companions.add(cur);
+                    }
+                }
+                showCompanions();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        showMessages();
+    }
+    public void showMessages(){
+        chatRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Iterator iterator = snapshot.getChildren().iterator();
+                String content = ((DataSnapshot) iterator.next()).getValue().toString();
+                String sender = ((DataSnapshot) iterator.next()).getValue().toString();
+                // Add the new message to the layout
+                TextView tv = new TextView(GroupSessionActivity.this);
+                LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                tv.setText("\n"+sender+": "+content+"\n");
+                tv.setTextColor(Color.WHITE);
+                tv.setLayoutParams(lParams);
+                chatLayout.addView(tv);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+    public void showCompanions(){
+        for(String companion: companions){
+            TextView tv = new TextView(this);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            tv.setLayoutParams(lp);
+            tv.setGravity(View.TEXT_ALIGNMENT_CENTER);
+            tv.setTextSize(17);
+            tv.setText(companion);
+            peopleLayout.addView(tv);
+        }
+    }
+    public void sendMessage(View view){
+        // Get the message from the EditText
+        String msg = messageTxt.getText().toString();
+        if(msg!=null && !msg.equals("")){
+            // Update firebase with the message
+            String newKey = chatRef.push().getKey();
+            HashMap<String, Object> msgInfo = new HashMap<String, Object>();
+            msgInfo.put("Content", msg);
+            msgInfo.put("Sender", myName);
+            chatRef.child(newKey).updateChildren(msgInfo);
+        }
     }
 }

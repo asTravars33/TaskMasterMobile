@@ -43,6 +43,11 @@
             android:parentActivityName=".MainActivity">
 
         </activity>
+        <activity
+            android:name=".GroupSessionActivity"
+            android:parentActivityName=".GroupsActivity">
+
+        </activity>
     </application>
 
 </manifest>
