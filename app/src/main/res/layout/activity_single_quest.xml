@@ -18,6 +18,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/task_desc"/>
     <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.4"
+        app:layout_constraintHeight_percent="0.4"
+        android:scaleType="centerCrop"
+        android:alpha="0.5"
+        android:src="@drawable/door"
+        app:layout_constraintLeft_toLeftOf="@id/gif_view"
+        app:layout_constraintRight_toLeftOf="@id/profile_img"
+        app:layout_constraintTop_toTopOf="@id/gif_view"
+        app:layout_constraintBottom_toBottomOf="@id/gif_view" />
+    <ImageView
         android:id="@+id/profile_img"
         android:layout_width="0dp"
         android:layout_height="0dp"
