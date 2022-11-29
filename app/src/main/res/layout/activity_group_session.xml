@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:textSize="15sp"
         android:text="Chat"
-        android:background="@color/main"
+        android:textColor="@color/main"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="13dp"
         app:layout_constraintLeft_toLeftOf="parent"

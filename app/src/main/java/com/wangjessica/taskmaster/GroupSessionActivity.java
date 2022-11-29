@@ -141,7 +141,7 @@ public class GroupSessionActivity extends AppCompatActivity {
                 // Add the new message to the layout
                 TextView tv = new TextView(GroupSessionActivity.this);
                 LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                tv.setText("\n"+sender+": "+content+"\n");
+                tv.setText("\n"+sender+": "+content);
                 tv.setTextColor(Color.WHITE);
                 tv.setLayoutParams(lParams);
                 chatLayout.addView(tv);
