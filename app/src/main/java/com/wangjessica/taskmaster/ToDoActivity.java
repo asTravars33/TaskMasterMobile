@@ -132,6 +132,15 @@ public class ToDoActivity extends AppCompatActivity implements AddTaskDialogFrag
     // Starting a quest with the tasks
     public void startQuest(View view){
         Intent intent = new Intent(ToDoActivity.this, QuestMenuActivity.class);
+        // Make String array version of times
+        ArrayList<String> timesString = new ArrayList<String>();
+        for(double time: times){
+            timesString.add(""+time);
+        }
+        // Make intent
+        intent.putStringArrayListExtra("tasks", tasks);
+        intent.putStringArrayListExtra("times", timesString);
+        // Move to next activity
         startActivity(intent);
     }
     // Adding a new task

@@ -83,6 +83,10 @@ public class GroupSessionActivity extends AppCompatActivity {
         groupKey = parentIntent.getStringExtra("groupKey");
         groupName = parentIntent.getStringExtra("groupName");
 
+        // Change the group title
+        TextView titleView = findViewById(R.id.title);
+        titleView.setText(groupName);
+
         // Firebase info
         auth = FirebaseAuth.getInstance();
         uId = auth.getCurrentUser().getUid();

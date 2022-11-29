@@ -53,6 +53,11 @@
             android:parentActivityName=".GroupsActivity">
 
         </activity>
+        <activity
+            android:name=".SingleQuestActivity"
+            android:parentActivityName=".QuestMenuActivity">
+
+        </activity>
     </application>
 
 </manifest>
