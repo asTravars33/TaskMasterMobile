@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -36,11 +38,13 @@ public class SingleQuestActivity extends AppCompatActivity {
 
     // Firebase
     private DatabaseReference userRef;
+    private DatabaseReference rootRef;
     private String userId;
 
     // Quest info
     private ArrayList<String> tasks;
     private ArrayList<Double> times; // Times are in minutes
+    private ArrayList<String> actionItems;
     private boolean timerDone = true;
     private long secondsLeft = 0;
 
@@ -55,7 +59,7 @@ public class SingleQuestActivity extends AppCompatActivity {
         timerView = findViewById(R.id.timer);
 
         // Firebase variables
-        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+        rootRef = FirebaseDatabase.getInstance().getReference();
         FirebaseAuth auth = FirebaseAuth.getInstance();
         userId = auth.getCurrentUser().getUid();
         userRef = rootRef.child("Users").child(userId);
@@ -74,6 +78,10 @@ public class SingleQuestActivity extends AppCompatActivity {
             times.add(Double.parseDouble(time));
         }
 
+        // Get the action items
+        getActionItems();
+        System.out.println(actionItems);
+
         // Move through each task
         for(int i=0; i<tasks.size(); i++){
             if(timerDone){
@@ -85,7 +93,8 @@ public class SingleQuestActivity extends AppCompatActivity {
     }
     // Running a task
     public void startTask(int i){
-        taskDesc.setText(tasks.get(i));
+        String[] nextThing = actionItems.get(i).split(";");
+        taskDesc.setText(Html.fromHtml(nextThing[0]+". Do <b>"+tasks.get(i)+"</b> for "+times.get(i)+" minutes to "+nextThing[1]));
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -139,5 +148,22 @@ public class SingleQuestActivity extends AppCompatActivity {
             VectorDrawableCompat.VFullPath path = vector.findPathByName("path"+i);
             path.setFillColor(avatarColors.get(i));
         }
+    }
+    // Get the storyline
+    public void getActionItems(){
+        rootRef.child("Quest Presets").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Iterator iterator = snapshot.getChildren().iterator();
+                while(iterator.hasNext()){
+                    actionItems.add(((DataSnapshot)iterator.next()).getKey());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }
