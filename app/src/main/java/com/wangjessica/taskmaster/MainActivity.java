@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
                     // Get the tags
                     ArrayList<String> curTags = new ArrayList<String>();
                     getTags(todo.getKey(), curTags);
-                    todoList.add(new ToDo(curTitle, curDate, curTags, snapshot.getKey(), curColor));
+                    todoList.add(new ToDo(curTitle, curDate, curTags, todo.getKey(), curColor));
                 }
 
                 // Display journals on RecyclerView
@@ -154,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
         }
         // Update the user's list of todos in Firebase
         String nextTodoKey = userRef.child("ToDos").push().getKey();
+        System.out.println("Next todo key: "+nextTodoKey);
         HashMap<String, Object> info = new HashMap<String, Object>();
         info.put("Title", title);
         info.put("Date", date);
@@ -166,7 +167,10 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
         HashMap<String, Object> pageInfo = new HashMap<String, Object>();
         pageInfo.put("Tasks", new ArrayList<String>());
         pageInfo.put("Times", new ArrayList<Double>());
+        System.out.println("Next todo key, again: "+nextTodoKey);
         rootRef.child("TodoPages").child(nextTodoKey).setValue(pageInfo);
+        System.out.println("Next todo key, for the third time: "+nextTodoKey);
+        System.out.println("Theoretical reference to todo page: "+rootRef.child("TodoPages").child(nextTodoKey));
     }
 
     // Moving to other pages
