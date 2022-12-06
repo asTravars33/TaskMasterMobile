@@ -79,22 +79,23 @@ public class SingleQuestActivity extends AppCompatActivity {
         }
 
         // Get the action items
-        getActionItems();
-        System.out.println(actionItems);
-
+        getActionItemsAndStartQuest();
+    }
+    // Starting the overall quest
+    public void startQuest(){
         // Move through each task
-        for(int i=0; i<tasks.size(); i++){
-            if(timerDone){
-                secondsLeft = (long)(times.get(i)*60);
-                timerDone = false;
-                startTask(i);
-            }
-        }
+        startTask(0);
     }
     // Running a task
     public void startTask(int i){
+        // Base case? (Quest finished?)
+        if(i>=tasks.size()){
+            return;
+        }
+        // Show the task
+        secondsLeft = (long)(times.get(i)*60);
         String[] nextThing = actionItems.get(i).split(";");
-        taskDesc.setText(Html.fromHtml(nextThing[0]+". Do <b>"+tasks.get(i)+"</b> for "+times.get(i)+" minutes to "+nextThing[1]));
+        taskDesc.setText(Html.fromHtml(nextThing[0]+". Do <b>"+tasks.get(i)+"</b> for "+times.get(i)+" minutes to "+nextThing[1]+"!"));
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -104,11 +105,13 @@ public class SingleQuestActivity extends AppCompatActivity {
                 String timeDisplay = pad(minutes)+":"+pad(seconds);
                 timerView.setText(timeDisplay);
                 secondsLeft--;
-                if (secondsLeft == 0) {
+                if (secondsLeft == -1) {
                     timerDone = true;
+                    timer.cancel();
+                    startTask(i+1);
                 }
             }
-        }, 1, (long)(60*times.get(i)));
+        }, 0, 1000);
     }
     public String pad(long l){
         String newS = "";
@@ -150,14 +153,17 @@ public class SingleQuestActivity extends AppCompatActivity {
         }
     }
     // Get the storyline
-    public void getActionItems(){
+    public void getActionItemsAndStartQuest(){
+        actionItems = new ArrayList<String>();
         rootRef.child("Quest Presets").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Iterator iterator = snapshot.getChildren().iterator();
                 while(iterator.hasNext()){
                     actionItems.add(((DataSnapshot)iterator.next()).getKey());
+                    System.out.println(((DataSnapshot)iterator.next()).getKey());
                 }
+                startQuest();
             }
 
             @Override
