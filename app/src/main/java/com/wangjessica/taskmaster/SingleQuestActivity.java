@@ -9,6 +9,9 @@ import android.text.Html;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.chaquo.python.PyObject;
+import com.chaquo.python.Python;
+import com.chaquo.python.android.AndroidPlatform;
 import com.devs.vectorchildfinder.VectorChildFinder;
 import com.devs.vectorchildfinder.VectorDrawableCompat;
 import com.google.firebase.auth.FirebaseAuth;
@@ -95,6 +98,7 @@ public class SingleQuestActivity extends AppCompatActivity {
         // Show the task
         secondsLeft = (long)(times.get(i)*60);
         String[] nextThing = actionItems.get(i).split(";");
+        getImage(nextThing[0]);
         taskDesc.setText(Html.fromHtml(nextThing[0]+". Do <b>"+tasks.get(i)+"</b> for "+times.get(i)+" minutes to "+nextThing[1]+"!"));
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -126,6 +130,22 @@ public class SingleQuestActivity extends AppCompatActivity {
             newS = s;
         }
         return newS;
+    }
+    // Retrieving image for quest segment
+    public void getImage(String line){
+        // Find the most important word
+        System.out.println(keyword(line));
+        // Downlaod the Bing image
+    }
+    public String keyword(String line){
+        if(!Python.isStarted()){
+            Python.start(new AndroidPlatform(this));
+        }
+        Python py = Python.getInstance();
+        PyObject pyobj = py.getModule("is_noun");
+        PyObject obj = null;
+        obj = pyobj.callAttr("get_noun", line);
+        return obj.toString();
     }
     // Getting avatar colors
     public void avatarColors(){
