@@ -134,7 +134,7 @@ public class SingleQuestActivity extends AppCompatActivity {
     // Retrieving image for quest segment
     public void getImage(String line){
         // Find the most important word
-        System.out.println(keyword(line));
+        // System.out.println(keyword(line));// TODO: Removed due to nltk package issues
         // Downlaod the Bing image
     }
     public String keyword(String line){

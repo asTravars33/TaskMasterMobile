@@ -171,6 +171,7 @@ public class ToDoActivity extends AppCompatActivity implements AddTaskDialogFrag
         if(submitted){
             times.remove(times.size()-1);
             tasks.remove(tasks.size()-1);
+            submitted = false;
         }
         // Add the layouts of tasks not yet done
         for(int i=lastAddedIdx; i<times.size(); i++){
@@ -276,15 +277,15 @@ public class ToDoActivity extends AppCompatActivity implements AddTaskDialogFrag
         times.set(idx1, times.get(idx2));
         tasks.set(idx2, task1);
         times.set(idx2, time1);
+        System.out.println("After swap:");
+        System.out.println(tasks);
+        System.out.println(times);
         // Update the layout
         lastAddedIdx = 0;
         todoPage.removeViews(1, todoPage.getChildCount()-1);
         displayNewTaskTimes();
     }
     public void recalFirebase(){
-        System.out.println("Recalibrating");
-        System.out.println(tasks);
-        System.out.println(times);
         HashMap<String, Object> info = new HashMap<String, Object>();
         info.put("Tasks", tasks);
         info.put("Times", times);
