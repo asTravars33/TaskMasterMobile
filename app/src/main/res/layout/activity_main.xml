@@ -28,8 +28,9 @@
         app:layout_constraintBottom_toTopOf="@id/filters"/>
     <LinearLayout
         android:id="@+id/filters"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_width="0dp"
+        app:layout_constraintHeight_percent="0.07"
         app:layout_constraintWidth_percent="0.8"
         app:layout_constraintTop_toBottomOf="@id/title"
         app:layout_constraintBottom_toTopOf="@id/recycler_view"
@@ -40,24 +41,37 @@
         android:weightSum="1">
         <TextView
             android:id="@+id/date_label"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_width="0dp"
             android:textSize = "15sp"
+            android:gravity="center"
             android:text="Date:"
-            android:layout_weight="0.2" />
+            android:layout_weight="0.15" />
         <EditText
             android:id="@+id/date_filter"
             android:layout_height="match_parent"
             android:layout_width="0dp"
-            android:layout_weight="0.25"
+            android:layout_weight="0.3"
+            android:textSize="15sp"
             android:hint="MM/DD/YY" />
         <TextView
             android:id="@+id/tag_label"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_width="0dp"
+            android:gravity="center"
             android:textSize="15sp"
             android:text="Tags:"
-            android:layout_weight="0.2" />
+            android:layout_weight="0.15" />
+        <TextView
+            android:id="@+id/tag_selection"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:background="@android:drawable/editbox_background"
+            android:drawableRight="@android:drawable/arrow_down_float"
+            android:layout_width="0dp"
+            android:layout_weight="0.4"
+            android:textSize="15sp"
+            android:text="Select Tags" />
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"

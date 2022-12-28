@@ -1,16 +1,19 @@
 package com.wangjessica.taskmaster;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -25,20 +28,28 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class MainActivity extends AppCompatActivity implements CreateTodoDialogFragment.CreateTodoListener{
 
     // Layout variables
     RecyclerView recycler;
     RecyclerAdapter adapter;
+    TextView tagSelection;
 
     // Firebase variables
     private FirebaseAuth auth;
     private DatabaseReference rootRef;
     private DatabaseReference userRef;
     private String userId;
+
+    // Internal storage
+    List<ToDo> todoList;
+    Set<String> allTags;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
 
         // Layout components
         recycler = findViewById(R.id.recycler_view);
+        tagSelection = findViewById(R.id.tag_selection);
+        allTags = new HashSet<String>();
 
         // Firebase info
         auth = FirebaseAuth.getInstance();
@@ -56,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
 
         // Instantiate the journal cards
         showTodos();
+        setUpTagSelection();
     }
     public void showTodos(){
         // Get the recycler view
@@ -66,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 // Create list of the user's current to-do lists
-                List<ToDo> todoList = new ArrayList<ToDo>();
+                todoList = new ArrayList<ToDo>();
                 todoList.add(new ToDo("Add New", "", new ArrayList<String>(), "", -1));
 
                 // Add the journals to the list
@@ -116,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
                 Iterator iterator = snapshot.getChildren().iterator();
                 while(iterator.hasNext()){
                     tags.add(((DataSnapshot)iterator.next()).getValue().toString());
+                    allTags.add(tags.get(tags.size()-1));
                 }
             }
 
@@ -125,7 +140,74 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
             }
         });
     }
-
+    public void setUpTagSelection(){
+        // Set up the dialogue box and onClick listener
+        tagSelection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Get all the tags
+                Set<String> allTags = new HashSet<String>();
+                for(ToDo card: todoList){
+                    ArrayList<String> thisTags = card.getTags();
+                    for(String tag: thisTags){
+                        allTags.add(tag);
+                    }
+                }
+                String[] curTags = new String[allTags.size()];
+                int idx = 0;
+                for(String tag: allTags){
+                    curTags[idx++] = tag;
+                }
+                Set<String> selectedTags = new TreeSet<String>();
+                boolean[] selectedTag = new boolean[curTags.length];
+                // Create the builder
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Select Tags");
+                builder.setCancelable(false);
+                builder.setMultiChoiceItems(curTags, selectedTag, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+                        if(b){
+                            // Checked - add to set of selected tags
+                            selectedTags.add(curTags[i]);
+                        }
+                        else{
+                            // Not checked
+                            selectedTags.remove(curTags[i]);
+                        }
+                    }
+                });
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // Create the display of all selected tags
+                        StringBuilder sb = new StringBuilder();
+                        for(String tag: selectedTags){
+                            sb.append(tag+", ");
+                        }
+                        tagSelection.setText(sb.substring(0, sb.length()-2));
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.setNeutralButton("Clear All", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        for(int k=0; k<selectedTag.length; k++){
+                            selectedTag[k] = false;
+                            selectedTags.clear();
+                            tagSelection.setText("");
+                        }
+                    }
+                });
+                builder.show();
+            }
+        });
+    }
     // Adding a new to-do list
     public void addTodo(){
         CreateTodoDialogFragment fragment = new CreateTodoDialogFragment();
