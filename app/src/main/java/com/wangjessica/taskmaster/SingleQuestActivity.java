@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Html;
 import android.widget.ImageView;
@@ -21,6 +23,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Timer;
@@ -50,6 +54,7 @@ public class SingleQuestActivity extends AppCompatActivity {
     private ArrayList<String> actionItems;
     private boolean timerDone = true;
     private long secondsLeft = 0;
+    private ImageView questImg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +65,7 @@ public class SingleQuestActivity extends AppCompatActivity {
         gifView = findViewById(R.id.gif_view);
         taskDesc = findViewById(R.id.task_desc);
         timerView = findViewById(R.id.timer);
+        questImg = findViewById(R.id.image_view);
 
         // Firebase variables
         rootRef = FirebaseDatabase.getInstance().getReference();
@@ -100,6 +106,7 @@ public class SingleQuestActivity extends AppCompatActivity {
         String[] nextThing = actionItems.get(i).split(";");
         getImage(nextThing[0]);
         taskDesc.setText(Html.fromHtml(nextThing[0]+". Do <b>"+tasks.get(i)+"</b> for "+times.get(i)+" minutes to "+nextThing[1]+"!"));
+        //taskDesc.setText(Html.fromHtml("Do <b>"+tasks.get(i)+"</b> for "+times.get(i)+" minutes to let the dream wake!"));
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -134,8 +141,33 @@ public class SingleQuestActivity extends AppCompatActivity {
     // Retrieving image for quest segment
     public void getImage(String line){
         // Find the most important word
-        // System.out.println(keyword(line));// TODO: Removed due to nltk package issues
-        // Downlaod the Bing image
+        String word = keyword(line);
+        System.out.println(word);
+        // Download the Bing image
+        Python py = Python.getInstance();
+        PyObject pyobj = py.getModule("get_img");
+        PyObject obj = null;
+        obj = pyobj.callAttr("get_image", word);
+        System.out.println(obj.toString());
+        // Set the new image
+        setNewImage(obj.toString());
+    }
+    private void setNewImage(String imageURL) {
+        Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try  {
+                    InputStream is = (InputStream) new URL(imageURL).getContent();
+                    Bitmap bitmap = BitmapFactory.decodeStream(is);
+                    questImg.setImageBitmap(bitmap);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
     }
     public String keyword(String line){
         if(!Python.isStarted()){
