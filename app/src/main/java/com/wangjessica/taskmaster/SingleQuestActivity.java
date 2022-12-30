@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Html;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,6 +39,7 @@ public class SingleQuestActivity extends AppCompatActivity {
     private GifImageView gifView;
     private TextView taskDesc;
     private TextView timerView;
+    private TextView doneButton;
 
     // Avatar
     private ArrayList<Integer> avatarColors;
@@ -54,6 +56,7 @@ public class SingleQuestActivity extends AppCompatActivity {
     private ArrayList<String> actionItems;
     private boolean timerDone = true;
     private long secondsLeft = 0;
+    private boolean curTaskDone = false;
     private ImageView questImg;
 
     @Override
@@ -66,6 +69,7 @@ public class SingleQuestActivity extends AppCompatActivity {
         taskDesc = findViewById(R.id.task_desc);
         timerView = findViewById(R.id.timer);
         questImg = findViewById(R.id.image_view);
+        doneButton = findViewById(R.id.done_button);
 
         // Firebase variables
         rootRef = FirebaseDatabase.getInstance().getReference();
@@ -97,6 +101,7 @@ public class SingleQuestActivity extends AppCompatActivity {
     }
     // Running a task
     public void startTask(int i){
+        curTaskDone = false;
         // Base case? (Quest finished?)
         if(i>=tasks.size()){
             return;
@@ -116,13 +121,16 @@ public class SingleQuestActivity extends AppCompatActivity {
                 String timeDisplay = pad(minutes)+":"+pad(seconds);
                 timerView.setText(timeDisplay);
                 secondsLeft--;
-                if (secondsLeft == -1) {
+                if (secondsLeft == -1 || curTaskDone) {
                     timerDone = true;
                     timer.cancel();
                     startTask(i+1);
                 }
             }
         }, 0, 1000);
+    }
+    public void doneTask(View view){
+        curTaskDone = true;
     }
     public String pad(long l){
         String newS = "";
