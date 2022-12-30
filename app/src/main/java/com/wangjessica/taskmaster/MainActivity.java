@@ -3,20 +3,16 @@ package com.wangjessica.taskmaster;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -186,6 +182,34 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
                             sb.append(tag+", ");
                         }
                         tagSelection.setText(sb.substring(0, sb.length()-2));
+                        // Change the todoLists shown
+                        ArrayList<ToDo> filteredTodos = new ArrayList<ToDo>();
+                        for(ToDo todo: todoList){
+                            boolean for_display = false;
+                            for(String tag: todo.getTags()){
+                                if(selectedTags.contains(tag)){
+                                    for_display = true;
+                                    break;
+                                }
+                            }
+                            if(for_display){
+                                filteredTodos.add(todo);
+                            }
+                        }
+                        // Update the adapter
+                        adapter = new RecyclerAdapter(filteredTodos);
+                        adapter.setOnItemClickListener(new ClickListener<ToDo>() {
+                            @Override
+                            public void onItemClick(ToDo target) {
+                                if(target.getTitle().equals("Add New")){
+                                    addTodo();
+                                }
+                                else{
+                                    showTodo(target);
+                                }
+                            }
+                        });
+                        recycler.setAdapter(adapter);
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -202,6 +226,20 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
                             selectedTags.clear();
                             tagSelection.setText("");
                         }
+                        // Update the adapter
+                        adapter = new RecyclerAdapter(todoList);
+                        adapter.setOnItemClickListener(new ClickListener<ToDo>() {
+                            @Override
+                            public void onItemClick(ToDo target) {
+                                if(target.getTitle().equals("Add New")){
+                                    addTodo();
+                                }
+                                else{
+                                    showTodo(target);
+                                }
+                            }
+                        });
+                        recycler.setAdapter(adapter);
                     }
                 });
                 builder.show();
