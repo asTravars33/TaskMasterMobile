@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
@@ -27,7 +28,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -39,15 +42,20 @@ public class SingleQuestActivity extends AppCompatActivity {
     private GifImageView gifView;
     private TextView taskDesc;
     private TextView timerView;
-    private TextView doneButton;
+    private ImageView doneButton;
 
     // Avatar
     private ArrayList<Integer> avatarColors;
     private ImageView avatarImg;
 
+    // Other user info
+    private int coinCnt;
+    private TextView coinDisplay;
+
     // Firebase
     private DatabaseReference userRef;
     private DatabaseReference rootRef;
+    private DatabaseReference profileRef;
     private String userId;
 
     // Quest info
@@ -77,6 +85,20 @@ public class SingleQuestActivity extends AppCompatActivity {
         userId = auth.getCurrentUser().getUid();
         userRef = rootRef.child("Users").child(userId);
 
+        // Retrieve current coin count
+        coinDisplay = findViewById(R.id.coin_label);
+        profileRef = userRef.child("Profile");
+        profileRef.child("Coins").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                coinCnt = Integer.parseInt(snapshot.getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         // Fill in avatar
         avatarImg = findViewById(R.id.profile_img);
         avatarColors = new ArrayList<Integer>();
@@ -102,8 +124,17 @@ public class SingleQuestActivity extends AppCompatActivity {
     // Running a task
     public void startTask(int i){
         curTaskDone = false;
+        doneButton.setBackgroundColor(getColor(R.color.red));
         // Base case? (Quest finished?)
         if(i>=tasks.size()){
+            coinCnt+=10;
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    coinDisplay.setText(""+coinCnt);
+                }
+            }, 1000);
             return;
         }
         // Show the task
@@ -116,16 +147,30 @@ public class SingleQuestActivity extends AppCompatActivity {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                long minutes = secondsLeft/60;
-                long seconds = secondsLeft%60;
-                String timeDisplay = pad(minutes)+":"+pad(seconds);
-                timerView.setText(timeDisplay);
-                secondsLeft--;
-                if (secondsLeft == -1 || curTaskDone) {
-                    timerDone = true;
-                    timer.cancel();
-                    startTask(i+1);
-                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        long minutes = secondsLeft/60;
+                        long seconds = secondsLeft%60;
+                        String timeDisplay = pad(minutes)+":"+pad(seconds);
+                        timerView.setText(timeDisplay);
+                        secondsLeft--;
+                        if (secondsLeft == -1 || curTaskDone) {
+                            doneButton.setBackgroundColor(getColor(R.color.green));
+                            coinCnt++;
+                            coinDisplay.setText(""+coinCnt);
+                            timerDone = true;
+                            timer.cancel();
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    startTask(i+1);
+                                }
+                            }, 500);
+                        }
+                    }
+                });
             }
         }, 0, 1000);
     }
@@ -231,5 +276,15 @@ public class SingleQuestActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    // Save changes
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Map<String, Object> coinUpdate = new HashMap<String, Object>();
+        coinUpdate.put("Coins", coinCnt);
+        profileRef.updateChildren(coinUpdate);
     }
 }
