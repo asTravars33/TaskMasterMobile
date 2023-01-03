@@ -287,30 +287,24 @@ public class SingleQuestActivity extends AppCompatActivity {
         });
     }
     public void getActionItemsAndStartQuestTemplate(){
-        HashMap<String, Object> magCreatures = new HashMap<String, Object>();
-        String[] creatures = new String[] {"arm","heel","hand","leg","foot","shoulder","ear","knees","calf","cheek","hip","chin"};
-        for(String creature: creatures){
-            magCreatures.put(creature, "");
+        // Template lists
+        String[] magicalCreatures = new String[] {"dragon","chimera","mermaid","yeti","basilisk","sphinx","medusa","griffin","centaur","hippogriff","fairy","kappa","pegasus","ghoul","pixie","cyclops","redcap","manticore","typhon","leprechaun","fenrir","cipactli","imp","minotaur","hydra","fomorians","charybdis","behemoth","cerberus","echidna","adlet","cacus","geryon","fachan","ogre","humbaba","scylla","hadhayosh","kee-wakw","abaia","phoenix","tarasque","cockatrice","harpy","makara","ammit","garuda","leviathan","wyvern","namazu","elf","serpopard","indus worm","ahuizotl","psoglav","sirin","ekek","hellhound","monocerus"};
+        String[] landforms = new String[] {"anabranch","arroyo","badlands","barchan","basin","bay","bayou","beach","bight","bluff","bornharuence","continent","cove","crevasse","cuesta","current","dam","dell","delta","dirt cone","desert","divide","dome","dry lake","dune","erg","estuary","escarpment","fjord","floodplain","forest","foe","hill","hogback","hoodoo","iceberg","inlet","island","islet","isthmus","karst","lake","latitude","lava dome","lava field","lava lake","lava spine","lava tube","longitude","lowland","marsh","mr","plain","plateau","pond","port","pothole","prairie","rapids","ravine","reef","reservoir","ria","riffle","river","sea","sound","strait","sandbar","sinkhole","swamp","terrace","tide","upstream","valley","volcano","waterfall"};
+        String[] bodyParts = new String[] {"arm","heel","hand","leg","foot","shoulder","ear","knees","calf","cheek","hip","chin"};
+        String[] lockedItems = new String[] {"door","box","chest","portal","window","vault"};
+        String[] magicalItems = new String[] {"armor","belt","book","boot","slipper","cloak","glove","helm","necklace","bracelet","ring","rod","scroll","shield","staff","wand","weapon"};
+
+        String[][] templateLists = new String[][]{magicalCreatures, landforms, bodyParts, lockedItems, magicalItems};
+        String[] templateText = new String[] {"A XX appears in your path;fight it", "You encounter a XX;cross it", "You fall and injure your XX;heal it", "You encounter a locked XX;unlock it", "You find a XX;activate it"};
+
+        // Populate actionItems
+        actionItems = new ArrayList<String>();
+        for(int i=0; i<tasks.size(); i++){
+            int idx = (int)(Math.random()*5);
         }
-        rootRef.child("Quest Templates").child("Body Parts").updateChildren(magCreatures);
-        doNext();
-    }
-    public void doNext(){
-        HashMap<String, Object> magCreatures = new HashMap<String, Object>();
-        String[] creatures = new String[] {"door","box","chest","portal","window","vault"};
-        for(String creature: creatures){
-            magCreatures.put(creature, "");
-        }
-        rootRef.child("Quest Templates").child("Locked Items").updateChildren(magCreatures);
-        doNext2();
-    }
-    public void doNext2(){
-        HashMap<String, Object> magCreatures = new HashMap<String, Object>();
-        String[] creatures = new String[] {"armor","belt","book","boot","slipper","cloak","glove","helm","necklace","bracelet","ring","rod","scroll","shield","staff","wand","weapon"};
-        for(String creature: creatures){
-            magCreatures.put(creature, "");
-        }
-        rootRef.child("Quest Templates").child("Magical Items").updateChildren(magCreatures);
+
+        // Begin the quest
+        startQuest();
     }
     // Save changes
 
