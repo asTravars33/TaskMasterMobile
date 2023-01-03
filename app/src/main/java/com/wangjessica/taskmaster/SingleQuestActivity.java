@@ -114,7 +114,8 @@ public class SingleQuestActivity extends AppCompatActivity {
         }
 
         // Get the action items
-        getActionItemsAndStartQuest();
+        //getActionItemsAndStartQuest("Random Preset");
+        getActionItemsAndStartQuest("Template Quest");
     }
     // Starting the overall quest
     public void startQuest(){
@@ -257,8 +258,16 @@ public class SingleQuestActivity extends AppCompatActivity {
             path.setFillColor(avatarColors.get(i));
         }
     }
-    // Get the storyline
-    public void getActionItemsAndStartQuest(){
+    /// Get the storyline - changes based on mode!! ///
+    public void getActionItemsAndStartQuest(String mode){
+        if(mode.equals("Random Preset")){
+            getActionItemsAndStartQuestPreset();
+        }
+        else if(mode.equals("Template Quest")){
+            getActionItemsAndStartQuestTemplate();
+        }
+    }
+    public void getActionItemsAndStartQuestPreset(){
         actionItems = new ArrayList<String>();
         rootRef.child("Quest Presets").addValueEventListener(new ValueEventListener() {
             @Override
@@ -277,7 +286,32 @@ public class SingleQuestActivity extends AppCompatActivity {
             }
         });
     }
-
+    public void getActionItemsAndStartQuestTemplate(){
+        HashMap<String, Object> magCreatures = new HashMap<String, Object>();
+        String[] creatures = new String[] {"arm","heel","hand","leg","foot","shoulder","ear","knees","calf","cheek","hip","chin"};
+        for(String creature: creatures){
+            magCreatures.put(creature, "");
+        }
+        rootRef.child("Quest Templates").child("Body Parts").updateChildren(magCreatures);
+        doNext();
+    }
+    public void doNext(){
+        HashMap<String, Object> magCreatures = new HashMap<String, Object>();
+        String[] creatures = new String[] {"door","box","chest","portal","window","vault"};
+        for(String creature: creatures){
+            magCreatures.put(creature, "");
+        }
+        rootRef.child("Quest Templates").child("Locked Items").updateChildren(magCreatures);
+        doNext2();
+    }
+    public void doNext2(){
+        HashMap<String, Object> magCreatures = new HashMap<String, Object>();
+        String[] creatures = new String[] {"armor","belt","book","boot","slipper","cloak","glove","helm","necklace","bracelet","ring","rod","scroll","shield","staff","wand","weapon"};
+        for(String creature: creatures){
+            magCreatures.put(creature, "");
+        }
+        rootRef.child("Quest Templates").child("Magical Items").updateChildren(magCreatures);
+    }
     // Save changes
 
     @Override
