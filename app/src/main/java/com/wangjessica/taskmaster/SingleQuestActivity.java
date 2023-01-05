@@ -30,6 +30,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -141,8 +142,8 @@ public class SingleQuestActivity extends AppCompatActivity {
         // Show the task
         secondsLeft = (long)(times.get(i)*60);
         String[] nextThing = actionItems.get(i).split(";");
-        getImage(nextThing[0]);
-        taskDesc.setText(Html.fromHtml(nextThing[0]+". Do <b>"+tasks.get(i)+"</b> for "+times.get(i)+" minutes to "+nextThing[1]+"!"));
+        //getImage(nextThing[0]);
+        taskDesc.setText(Html.fromHtml(nextThing[0]+". <b>"+tasks.get(i)+"</b> for "+times.get(i)+" minutes to "+nextThing[1]+"!"));
         //taskDesc.setText(Html.fromHtml("Do <b>"+tasks.get(i)+"</b> for "+times.get(i)+" minutes to let the dream wake!"));
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -301,6 +302,14 @@ public class SingleQuestActivity extends AppCompatActivity {
         actionItems = new ArrayList<String>();
         for(int i=0; i<tasks.size(); i++){
             int idx = (int)(Math.random()*5);
+            String[] list = templateLists[idx];
+            int elemIdx = (int)(Math.random()*list.length);
+            String questSegment = templateText[idx].replace("XX", list[elemIdx]);
+            char c = list[elemIdx].charAt(0);
+            if(c=='a'||c=='e'||c=='i'||c=='o'||c=='u'){
+                questSegment.replace("a ", "an ");
+            }
+            actionItems.add(questSegment);
         }
 
         // Begin the quest
