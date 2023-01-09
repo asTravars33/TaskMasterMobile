@@ -28,18 +28,21 @@ public class QuestMenuActivity extends AppCompatActivity {
         Intent intent = new Intent(QuestMenuActivity.this, SingleQuestActivity.class);
         intent.putStringArrayListExtra("tasks", tasks);
         intent.putStringArrayListExtra("times", times);
+        intent.putExtra("type", "Random Preset");
         startActivity(intent);
     }
     public void questTemplate(View view){
         Intent intent = new Intent(QuestMenuActivity.this, SingleQuestActivity.class);
         intent.putStringArrayListExtra("tasks", tasks);
         intent.putStringArrayListExtra("times", times);
+        intent.putExtra("type", "Template Quest");
         startActivity(intent);
     }
     public void questAI(View view){
         Intent intent = new Intent(QuestMenuActivity.this, SingleQuestActivity.class);
         intent.putStringArrayListExtra("tasks", tasks);
         intent.putStringArrayListExtra("times", times);
+        intent.putExtra("type", "ML-Generated");
         startActivity(intent);
     }
 }

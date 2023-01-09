@@ -93,6 +93,7 @@ public class SingleQuestActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 coinCnt = Integer.parseInt(snapshot.getValue().toString());
+                coinDisplay.setText(""+coinCnt);
             }
 
             @Override
@@ -116,7 +117,8 @@ public class SingleQuestActivity extends AppCompatActivity {
 
         // Get the action items
         //getActionItemsAndStartQuest("Random Preset");
-        getActionItemsAndStartQuest("Template Quest");
+        String type = intent.getStringExtra("type");
+        getActionItemsAndStartQuest(type);
     }
     // Starting the overall quest
     public void startQuest(){
@@ -135,46 +137,52 @@ public class SingleQuestActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     coinDisplay.setText(""+coinCnt);
+                    updateCoins();
+                    // Go back to main activity
+                    System.out.println("Going back babes");
+                    Intent intent = new Intent(SingleQuestActivity.this, MainActivity.class);
+                    startActivity(intent);
                 }
             }, 1000);
-            return;
         }
-        // Show the task
-        secondsLeft = (long)(times.get(i)*60);
-        String[] nextThing = actionItems.get(i).split(";");
-        //getImage(nextThing[0]);
-        taskDesc.setText(Html.fromHtml(nextThing[0]+". <b>"+tasks.get(i)+"</b> for "+times.get(i)+" minutes to "+nextThing[1]+"!"));
-        //taskDesc.setText(Html.fromHtml("Do <b>"+tasks.get(i)+"</b> for "+times.get(i)+" minutes to let the dream wake!"));
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        long minutes = secondsLeft/60;
-                        long seconds = secondsLeft%60;
-                        String timeDisplay = pad(minutes)+":"+pad(seconds);
-                        timerView.setText(timeDisplay);
-                        secondsLeft--;
-                        if (secondsLeft == -1 || curTaskDone) {
-                            doneButton.setBackgroundColor(getColor(R.color.green));
-                            coinCnt++;
-                            coinDisplay.setText(""+coinCnt);
-                            timerDone = true;
-                            timer.cancel();
-                            Handler handler = new Handler();
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    startTask(i+1);
-                                }
-                            }, 500);
+        else{
+            // Show the task
+            secondsLeft = (long)(times.get(i)*60);
+            String[] nextThing = actionItems.get(i).split(";");
+            //getImage(nextThing[0]);
+            taskDesc.setText(Html.fromHtml(nextThing[0]+". <b>"+tasks.get(i)+"</b> for "+times.get(i)+" minutes to "+nextThing[1]+"!"));
+            //taskDesc.setText(Html.fromHtml("Do <b>"+tasks.get(i)+"</b> for "+times.get(i)+" minutes to let the dream wake!"));
+            Timer timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            long minutes = secondsLeft/60;
+                            long seconds = secondsLeft%60;
+                            String timeDisplay = pad(minutes)+":"+pad(seconds);
+                            timerView.setText(timeDisplay);
+                            secondsLeft--;
+                            if (secondsLeft == -1 || curTaskDone) {
+                                doneButton.setBackgroundColor(getColor(R.color.green));
+                                coinCnt++;
+                                coinDisplay.setText(""+coinCnt);
+                                timerDone = true;
+                                timer.cancel();
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        startTask(i+1);
+                                    }
+                                }, 500);
+                            }
                         }
-                    }
-                });
-            }
-        }, 0, 1000);
+                    });
+                }
+            }, 0, 1000);
+        }
     }
     public void doneTask(View view){
         curTaskDone = true;
@@ -256,7 +264,8 @@ public class SingleQuestActivity extends AppCompatActivity {
         VectorChildFinder vector = new VectorChildFinder(this, R.drawable.avatar, avatarImg);
         for(int i=0; i<avatarColors.size(); i++){
             VectorDrawableCompat.VFullPath path = vector.findPathByName("path"+i);
-            path.setFillColor(avatarColors.get(i));
+            if(path!=null)
+                path.setFillColor(avatarColors.get(i));
         }
     }
     /// Get the storyline - changes based on mode!! ///
@@ -320,6 +329,9 @@ public class SingleQuestActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        // updateCoins();
+    }
+    private void updateCoins(){
         Map<String, Object> coinUpdate = new HashMap<String, Object>();
         coinUpdate.put("Coins", coinCnt);
         profileRef.updateChildren(coinUpdate);
