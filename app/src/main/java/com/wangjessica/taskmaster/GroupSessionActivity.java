@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -36,6 +39,9 @@ public class GroupSessionActivity extends AppCompatActivity {
     EditText messageTxt;
     ScrollView peopleScroll;
     LinearLayout peopleLayout;
+    TextView link;
+    Button addButton;
+    MediaPlayer player;
 
     // Group info
     ArrayList<String> companions = new ArrayList<String>();
@@ -63,6 +69,8 @@ public class GroupSessionActivity extends AppCompatActivity {
         messageTxt = findViewById(R.id.message_text);
         peopleScroll = findViewById(R.id.people_list);
         peopleLayout = findViewById(R.id.people_list_layout);
+        link = findViewById(R.id.link);
+        addButton = findViewById(R.id.add_button);
         Button peopleButton = findViewById(R.id.people_button);
         peopleButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,6 +83,13 @@ public class GroupSessionActivity extends AppCompatActivity {
                     peopleScroll.setVisibility(View.INVISIBLE);
                     peopleShowing = false;
                 }
+            }
+        });
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String linkText = link.getText().toString();
+                playMusic(linkText);
             }
         });
 
@@ -134,6 +149,18 @@ public class GroupSessionActivity extends AppCompatActivity {
         });
 
         showMessages();
+    }
+    public void playMusic(String soundLink){
+        player = new MediaPlayer();
+        player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        try {
+            player.setDataSource(soundLink);
+            player.prepare();
+            player.start();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     public void showMessages(){
         chatRef.addChildEventListener(new ChildEventListener() {

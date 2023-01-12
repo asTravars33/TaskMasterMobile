@@ -117,8 +117,9 @@ public class SingleQuestActivity extends AppCompatActivity {
 
         // Get the action items
         //getActionItemsAndStartQuest("Random Preset");
-        String type = intent.getStringExtra("type");
-        getActionItemsAndStartQuest(type);
+        getSegment();
+        //String type = intent.getStringExtra("type");
+        //getActionItemsAndStartQuest(type);
     }
     // Starting the overall quest
     public void startQuest(){
@@ -323,6 +324,13 @@ public class SingleQuestActivity extends AppCompatActivity {
 
         // Begin the quest
         startQuest();
+    }
+    public void getSegment(){
+        Python py = Python.getInstance();
+        PyObject pyobj = py.getModule("gen_text");
+        PyObject obj = null;
+        obj = pyobj.callAttr("get_image", "You begin your quest to find a rare diamond. ");
+        System.out.println(obj.toString());
     }
     // Save changes
 

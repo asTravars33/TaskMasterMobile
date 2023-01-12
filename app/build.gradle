@@ -21,10 +21,12 @@ android {
         }
         python {
             version "3.8"
-            /*pip {
+            pip {
                 install "nltk"
                 install "requests"
-            }*/
+                install "numpy"
+                install "tensorflow"
+            }
         }
     }
 
