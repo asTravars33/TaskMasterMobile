@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -151,8 +152,13 @@ public class GroupSessionActivity extends AppCompatActivity {
         showMessages();
     }
     public void playMusic(String soundLink){
+        soundLink = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
         player = new MediaPlayer();
-        player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        player.setAudioAttributes(
+                new AudioAttributes
+                        .Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .build());
         try {
             player.setDataSource(soundLink);
             player.prepare();
