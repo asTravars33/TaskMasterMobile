@@ -96,7 +96,9 @@ public class GroupsActivity extends AppCompatActivity implements CreateGroupDial
                         if(target.getTitle().equals("Add Group")){
                             makeGroup();
                         }
-                        gotoGroup(target);
+                        else{
+                            gotoGroup(target);
+                        }
                     }
                 });
                 recycler.setAdapter(adapter);
@@ -110,6 +112,7 @@ public class GroupsActivity extends AppCompatActivity implements CreateGroupDial
     }
     // Creating a new group
     public void makeGroup(){
+        System.out.println("Making group");
         CreateGroupDialogFragment fragment = new CreateGroupDialogFragment();
         fragment.setCancelable(true);
         fragment.show(getSupportFragmentManager(), "New Group");
@@ -124,6 +127,7 @@ public class GroupsActivity extends AppCompatActivity implements CreateGroupDial
         info.put("User", userName);
         info.put("Capacity", capacity);
         info.put("Color", color);
+        info.put(userName, "");
         groupsRef.child(nextGroupKey).setValue(info);
     }
 

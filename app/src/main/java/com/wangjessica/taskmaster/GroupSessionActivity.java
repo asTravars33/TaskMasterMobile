@@ -10,6 +10,7 @@ import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -37,6 +38,7 @@ public class GroupSessionActivity extends AppCompatActivity {
 
     // Layout components
     LinearLayout chatLayout;
+    ScrollView chatScroll;
     EditText messageTxt;
     ScrollView peopleScroll;
     LinearLayout peopleLayout;
@@ -67,6 +69,7 @@ public class GroupSessionActivity extends AppCompatActivity {
 
         // Layout variables
         chatLayout = findViewById(R.id.chat);
+        chatScroll = findViewById(R.id.chat_scroll);
         messageTxt = findViewById(R.id.message_text);
         peopleScroll = findViewById(R.id.people_list);
         peopleLayout = findViewById(R.id.people_list_layout);
@@ -160,6 +163,7 @@ public class GroupSessionActivity extends AppCompatActivity {
                         .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                         .build());
         try {
+            System.out.println("Playing music....");
             player.setDataSource(soundLink);
             player.prepare();
             player.start();
@@ -182,6 +186,13 @@ public class GroupSessionActivity extends AppCompatActivity {
                 tv.setTextColor(Color.WHITE);
                 tv.setLayoutParams(lParams);
                 chatLayout.addView(tv);
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        chatScroll.fullScroll(ScrollView.FOCUS_DOWN);
+                    }
+                }, 500);
             }
 
             @Override
@@ -226,6 +237,17 @@ public class GroupSessionActivity extends AppCompatActivity {
             msgInfo.put("Content", msg);
             msgInfo.put("Sender", myName);
             chatRef.child(newKey).updateChildren(msgInfo);
+            // Clear message
+            messageTxt.setText("");
         }
+    }
+
+    // Lifecycle
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Remove the user from the list of people in the session
+        groupRef.child(myName).removeValue();
     }
 }

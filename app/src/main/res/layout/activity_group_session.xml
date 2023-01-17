@@ -56,6 +56,7 @@
         app:layout_constraintTop_toBottomOf="@id/chat_heading">
         <LinearLayout
             android:id="@+id/chat"
+            android:padding="15dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -125,13 +126,16 @@
     <ScrollView
         android:id="@+id/people_list"
         android:layout_width="0dp"
-        app:layout_constraintWidth_percent="0.45"
+        app:layout_constraintWidth_percent="0.4"
         android:layout_height="0dp"
         android:visibility="invisible"
+        android:layout_marginLeft="3dp"
         app:layout_constraintHeight_percent="0.35"
         app:layout_constraintLeft_toLeftOf="@id/background_gif"
         app:layout_constraintTop_toBottomOf="@id/people_button">
         <LinearLayout
+            android:background="@color/accent"
+            android:textColor="@color/white"
             android:id="@+id/people_list_layout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
