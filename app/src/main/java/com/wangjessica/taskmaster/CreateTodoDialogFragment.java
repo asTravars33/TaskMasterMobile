@@ -58,9 +58,18 @@ public class CreateTodoDialogFragment extends DialogFragment {
         // Create the AlertDialog object and return it
         builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                // Get the info
                 String curTitle = ((EditText) customLayout.findViewById(R.id.name)).getText().toString();
                 String curDate = ((EditText) customLayout.findViewById(R.id.date)).getText().toString();
-                listener.onDialogPositiveClick(curTitle, curDate, pickedColor, new ArrayList<String>()); // TODO: Let the user enter tags
+                String curTags = ((EditText) customLayout.findViewById(R.id.tags)).getText().toString();
+                // Create tags array
+                String[] tags = curTags.split(",\\s*");
+                ArrayList<String> tagsList = new ArrayList<String>();
+                for(String tag: tags){
+                    tagsList.add(tag);
+                }
+                // Create the to-do object
+                listener.onDialogPositiveClick(curTitle, curDate, pickedColor, tagsList);
             }
         });
         return builder.create();

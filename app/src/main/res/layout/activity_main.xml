@@ -31,7 +31,7 @@
         android:layout_height="0dp"
         android:layout_width="0dp"
         app:layout_constraintHeight_percent="0.07"
-        app:layout_constraintWidth_percent="0.8"
+        app:layout_constraintWidth_percent="0.9"
         app:layout_constraintTop_toBottomOf="@id/title"
         app:layout_constraintBottom_toTopOf="@id/recycler_view"
         android:layout_marginTop="20dp"
@@ -46,14 +46,21 @@
             android:textSize = "15sp"
             android:gravity="center"
             android:text="Date:"
-            android:layout_weight="0.15" />
+            android:layout_weight="0.1" />
         <EditText
             android:id="@+id/date_filter"
             android:layout_height="match_parent"
             android:layout_width="0dp"
-            android:layout_weight="0.3"
+            android:layout_weight="0.25"
             android:textSize="15sp"
             android:hint="MM/DD/YY" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/apply_date_button"
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="0.15"
+            android:background="@drawable/arrow"
+            android:textSize="12sp" />
         <TextView
             android:id="@+id/tag_label"
             android:layout_height="match_parent"
@@ -69,7 +76,7 @@
             android:background="@android:drawable/editbox_background"
             android:drawableRight="@android:drawable/arrow_down_float"
             android:layout_width="0dp"
-            android:layout_weight="0.4"
+            android:layout_weight="0.35"
             android:textSize="15sp"
             android:text="Select Tags" />
     </LinearLayout>

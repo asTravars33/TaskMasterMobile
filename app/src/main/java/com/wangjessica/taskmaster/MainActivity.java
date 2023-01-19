@@ -10,6 +10,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
     RecyclerView recycler;
     RecyclerAdapter adapter;
     TextView tagSelection;
+    EditText dateFilter;
+    Button applyDateButton;
 
     // Firebase variables
     private FirebaseAuth auth;
@@ -55,6 +59,14 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
         // Layout components
         recycler = findViewById(R.id.recycler_view);
         tagSelection = findViewById(R.id.tag_selection);
+        applyDateButton = findViewById(R.id.apply_date_button);
+        dateFilter = findViewById(R.id.date_filter);
+        applyDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                applyDate();
+            }
+        });
         allTags = new HashSet<String>();
 
         // Firebase info
@@ -118,6 +130,47 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
 
             }
         });
+    }
+    public void applyDate(){
+        // Get the inputted date
+        String date = dateFilter.getText().toString();
+        // Is the date blank?
+        if(date.equals("")){
+            adapter = new RecyclerAdapter(todoList);
+            adapter.setOnItemClickListener(new ClickListener<ToDo>() {
+                @Override
+                public void onItemClick(ToDo target) {
+                    if(target.getTitle().equals("Add New")){
+                        addTodo();
+                    }
+                    else{
+                        showTodo(target);
+                    }
+                }
+            });
+            recycler.setAdapter(adapter);
+        }
+        // Change the todoLists shown
+        ArrayList<ToDo> filteredTodos = new ArrayList<ToDo>();
+        for(ToDo todo: todoList){
+            if(todo.getDate().equals(date)){
+                filteredTodos.add(todo);
+            }
+        }
+        // Update the adapter
+        adapter = new RecyclerAdapter(filteredTodos);
+        adapter.setOnItemClickListener(new ClickListener<ToDo>() {
+            @Override
+            public void onItemClick(ToDo target) {
+                if(target.getTitle().equals("Add New")){
+                    addTodo();
+                }
+                else{
+                    showTodo(target);
+                }
+            }
+        });
+        recycler.setAdapter(adapter);
     }
     public void getTags(String todoKey, ArrayList<String> tags){
         userRef.child("ToDos").child(todoKey).child("Tags").addValueEventListener(new ValueEventListener() {
@@ -263,6 +316,7 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
 
     @Override
     public void onDialogPositiveClick(String title, String date, int color, ArrayList<String> tags) {
+        System.out.println(tags);
         // Error control - no name and/or date entered
         if(title==null || title.equals("")){
             title = "Journal";
@@ -279,8 +333,6 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
         info.put("Title", title);
         info.put("Date", date);
         info.put("Color", color);
-        tags.add("Thing");
-        tags.add("Thing2"); // TODO: Remove thing and thing2
         info.put("Tags", tags);
         userRef.child("ToDos").child(nextTodoKey).setValue(info);
         // Update the list of all to-do pages in Firebase

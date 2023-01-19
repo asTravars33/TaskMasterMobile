@@ -50,7 +50,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edit_name"
-        app:layout_constraintBottom_toTopOf="@id/edit_color"
+        app:layout_constraintBottom_toTopOf="@id/edit_tags"
         android:layout_marginTop="10dp"
         android:weightSum="1"
         android:orientation="horizontal">
@@ -66,6 +66,34 @@
             android:layout_height="wrap_content"
             android:background="@drawable/inputs"
             android:hint="Today's Date"
+            android:padding="6dp"
+            android:layout_width="0dp"
+            android:layout_weight = "0.8" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/edit_tags"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.85"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_date"
+        app:layout_constraintBottom_toTopOf="@id/edit_color"
+        android:layout_marginTop="10dp"
+        android:weightSum="1"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tags_label"
+            android:text="Tags: "
+            android:textSize="22sp"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight = "0.2" />
+        <EditText
+            android:id="@+id/tags"
+            android:layout_height="wrap_content"
+            android:background="@drawable/inputs"
+            android:hint="E.g: school, important, lengthy"
             android:padding="6dp"
             android:layout_width="0dp"
             android:layout_weight = "0.8" />
