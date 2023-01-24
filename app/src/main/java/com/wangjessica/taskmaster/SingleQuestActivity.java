@@ -132,7 +132,7 @@ public class SingleQuestActivity extends AppCompatActivity {
         doneButton.setBackgroundColor(getColor(R.color.red));
         // Base case? (Quest finished?)
         if(i>=tasks.size()){
-            coinCnt+=10;
+            coinCnt+=25;
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
@@ -167,7 +167,7 @@ public class SingleQuestActivity extends AppCompatActivity {
                             secondsLeft--;
                             if (secondsLeft == -1 || curTaskDone) {
                                 doneButton.setBackgroundColor(getColor(R.color.green));
-                                coinCnt++;
+                                coinCnt+=5;
                                 coinDisplay.setText(""+coinCnt);
                                 timerDone = true;
                                 timer.cancel();
