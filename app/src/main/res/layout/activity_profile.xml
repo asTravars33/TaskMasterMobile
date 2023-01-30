@@ -29,8 +29,9 @@
         android:layout_width="0dp"
         android:background="@color/main"
         android:layout_height="0dp"
+        android:layout_marginLeft="10dp"
         app:srcCompat="@drawable/avatar"
-        app:layout_constraintWidth_percent="0.6"
+        app:layout_constraintWidth_percent="0.5"
         app:layout_constraintHeight_percent="0.4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/path_selection"
@@ -40,22 +41,29 @@
         android:id="@+id/path_selection"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         app:layout_constraintHeight_percent="0.4"
         app:layout_constraintWidth_percent="0.4"
         app:layout_constraintLeft_toRightOf="@id/profile_img"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title"
-        app:layout_constraintBottom_toTopOf="@id/color_pick"
+        app:layout_constraintTop_toTopOf="@id/profile_img"
+        app:layout_constraintBottom_toBottomOf="@id/profile_img"
         android:weightSum="1"
         android:orientation="vertical">
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_path0"
-            android:tag="path0"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.25"
             android:onClick="updateAvatar"
+            android:background="@color/accent2"
+            android:textColor="@color/white"
+            android:tag="path0"
+            android:layout_marginBottom = "10dp"
             android:text="Skin" />
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_path1"
             android:tag="path1"
@@ -63,6 +71,9 @@
             android:layout_height="0dp"
             android:layout_weight="0.25"
             android:onClick="updateAvatar"
+            android:background="@color/accent2"
+            android:layout_marginBottom = "10dp"
+            android:textColor="@color/white"
             android:text="Shirt" />
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_path2"
@@ -71,6 +82,9 @@
             android:layout_height="0dp"
             android:layout_weight="0.25"
             android:onClick="updateAvatar"
+            android:background="@color/accent2"
+            android:textColor="@color/white"
+            android:layout_marginBottom = "10dp"
             android:text="Pants" />
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_path3"
@@ -79,6 +93,8 @@
             android:layout_height="0dp"
             android:layout_weight="0.25"
             android:onClick="updateAvatar"
+            android:background="@color/accent2"
+            android:textColor="@color/white"
             android:text="Shoes" />
     </LinearLayout>
     <LinearLayout
@@ -95,6 +111,9 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/pick_color_button"
             android:text="Select Color"
+            android:layout_marginRight = "5dp"
+            android:textColor="@color/white"
+            android:background="@color/accent"
             android:textSize="20sp"
             android:layout_height="wrap_content"
             android:layout_width="0dp"
@@ -102,7 +121,7 @@
         <View
             android:id="@+id/pick_color_view"
             android:layout_height="match_parent"
-            android:background="@color/black"
+            android:background="@color/main"
             android:padding="4dp"
             android:layout_width="0dp"
             android:layout_weight = "0.5" />
@@ -152,7 +171,7 @@
         android:textColor="@color/white"
         android:onClick="saveUpdates"
         android:textSize="16sp"
-        android:background="@color/black"
+        android:background="@color/main"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/name_field"
