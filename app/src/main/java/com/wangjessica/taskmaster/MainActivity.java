@@ -312,15 +312,14 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
 
     // Going to a to-do list
     public void showTodo(ToDo target){
-        System.out.println(target.getTags());
         Intent intent = new Intent(MainActivity.this, ToDoActivity.class);
         intent.putExtra("key", target.getTodoKey());
+        intent.putExtra("title", target.getTitle());
         startActivity(intent);
     }
 
     @Override
     public void onDialogPositiveClick(String title, String date, int color, ArrayList<String> tags) {
-        System.out.println(tags);
         // Error control - no name and/or date entered
         if(title==null || title.equals("")){
             title = "Journal";
@@ -332,7 +331,6 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
         }
         // Update the user's list of todos in Firebase
         String nextTodoKey = userRef.child("ToDos").push().getKey();
-        System.out.println("Next todo key: "+nextTodoKey);
         HashMap<String, Object> info = new HashMap<String, Object>();
         info.put("Title", title);
         info.put("Date", date);
@@ -343,10 +341,7 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
         HashMap<String, Object> pageInfo = new HashMap<String, Object>();
         pageInfo.put("Tasks", new ArrayList<String>());
         pageInfo.put("Times", new ArrayList<Double>());
-        System.out.println("Next todo key, again: "+nextTodoKey);
         rootRef.child("TodoPages").child(nextTodoKey).setValue(pageInfo);
-        System.out.println("Next todo key, for the third time: "+nextTodoKey);
-        System.out.println("Theoretical reference to todo page: "+rootRef.child("TodoPages").child(nextTodoKey));
     }
 
     // Moving to other pages

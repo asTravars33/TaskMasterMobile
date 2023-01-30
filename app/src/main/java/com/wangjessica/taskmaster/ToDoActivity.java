@@ -57,9 +57,6 @@ public class ToDoActivity extends AppCompatActivity implements AddTaskDialogFrag
         times = new ArrayList<Double>();
         instantiateTasksTimes();
 
-        System.out.println(tasks);
-        System.out.println(times);
-
         // Instantiate layout components
         todoPage = findViewById(R.id.todo_page);
         addTaskButton = findViewById(R.id.add_task_button);
@@ -70,6 +67,11 @@ public class ToDoActivity extends AppCompatActivity implements AddTaskDialogFrag
                 showAddTaskDialog();
             }
         });
+
+        // Display the todolist's title
+        String title = intent.getStringExtra("title");
+        TextView titleView = findViewById(R.id.title);
+        titleView.setText(title);
     }
 
     // Get the existing list of tasks and times
