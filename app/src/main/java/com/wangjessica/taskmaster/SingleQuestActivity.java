@@ -117,9 +117,9 @@ public class SingleQuestActivity extends AppCompatActivity {
 
         // Get the action items
         //getActionItemsAndStartQuest("Random Preset");
-        getSegment();
-        //String type = intent.getStringExtra("type");
-        //getActionItemsAndStartQuest(type);
+        // getSegment();
+        String type = intent.getStringExtra("type");
+        getActionItemsAndStartQuest(type);
     }
     // Starting the overall quest
     public void startQuest(){
@@ -134,15 +134,21 @@ public class SingleQuestActivity extends AppCompatActivity {
         if(i>=tasks.size()){
             coinCnt+=25;
             Handler handler = new Handler();
+            doneButton.setBackgroundColor(getColor(R.color.green));
+            // Notify user of quest finished
+            taskDesc.setText("Quest Complete!");
+            // Coins update
+            coinDisplay.setText(""+coinCnt);
+            updateCoins();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    coinDisplay.setText(""+coinCnt);
+                    /*coinDisplay.setText(""+coinCnt);
                     updateCoins();
                     // Go back to main activity
                     System.out.println("Going back babes");
                     Intent intent = new Intent(SingleQuestActivity.this, MainActivity.class);
-                    startActivity(intent);
+                    startActivity(intent);*/
                 }
             }, 1000);
         }
