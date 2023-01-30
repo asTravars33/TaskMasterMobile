@@ -234,6 +234,10 @@ public class MainActivity extends AppCompatActivity implements CreateTodoDialogF
                         for(String tag: selectedTags){
                             sb.append(tag+", ");
                         }
+                        // No tags selected?
+                        if(sb.length()<2){
+                            return;
+                        }
                         tagSelection.setText(sb.substring(0, sb.length()-2));
                         // Change the todoLists shown
                         ArrayList<ToDo> filteredTodos = new ArrayList<ToDo>();
