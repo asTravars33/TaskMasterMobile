@@ -33,6 +33,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import pl.droidsonroids.gif.GifImageView;
 
@@ -202,7 +204,32 @@ public class GroupSessionActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }*/
-    public void cycleBackgroundGifs(){}
+    public void cycleBackgroundGifs(){
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            int idx = 1;
+            int max = 4;
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Change the background
+                        String name="study_"+idx;
+                        System.out.println(name);
+                        int drawId = getResources().getIdentifier(name, "drawable", "com.wangjessica.taskmaster");
+                        gif.setBackgroundResource(drawId);
+                        // Update background index
+                        System.out.println(idx+" "+max);
+                        idx++;
+                        if(idx>max){
+                            idx = 1;
+                        }
+                    }
+                });
+            }
+        }, 0, 5000); // TODO: Change to 60000 or smth
+    }
     public void showMessages(){
         chatRef.addChildEventListener(new ChildEventListener() {
             @Override
