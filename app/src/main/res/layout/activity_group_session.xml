@@ -72,7 +72,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/chat_scroll"
-        app:layout_constraintBottom_toTopOf="@id/add_playlist"
+        app:layout_constraintBottom_toTopOf="@id/change_music"
         android:weightSum="1"
         android:orientation="horizontal">
         <EditText
@@ -91,7 +91,7 @@
             android:layout_weight="0.3" />
     </LinearLayout>
     <LinearLayout
-        android:id="@+id/add_playlist"
+        android:id="@+id/change_music"
         android:layout_width="0dp"
         app:layout_constraintWidth_percent="0.8"
         android:layout_height="0dp"
@@ -101,13 +101,13 @@
         app:layout_constraintTop_toBottomOf="@id/send_message"
         android:weightSum="1"
         android:orientation="horizontal">
-        <EditText
-            android:id="@+id/link"
+        <TextView
+            android:id="@+id/song_name"
             android:layout_height="match_parent"
             android:layout_width="0dp"
             android:layout_weight="0.7" />
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/add_button"
+            android:id="@+id/next_button"
             android:onClick="sendMessage"
             android:text="Add"
             android:textColor="@color/white"

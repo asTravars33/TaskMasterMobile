@@ -2,4 +2,8 @@
     <string name="app_name">TaskMaster</string>
     <string name="todo_header1">Task</string>
     <string name="todo_header2">Time</string>
+    <string-array name="songs">
+        <item>Road To Recovery</item>
+        <item>Will To Succeed</item>
+    </string-array>
 </resources>

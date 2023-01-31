@@ -34,6 +34,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import pl.droidsonroids.gif.GifImageView;
+
 public class GroupSessionActivity extends AppCompatActivity {
 
     // Layout components
@@ -42,8 +44,11 @@ public class GroupSessionActivity extends AppCompatActivity {
     EditText messageTxt;
     ScrollView peopleScroll;
     LinearLayout peopleLayout;
-    TextView link;
-    Button addButton;
+    GifImageView gif;
+    TextView songNameView;
+    Button nextSongButton;
+    String[] songNameChoices;
+    int songIdx = 0;
     MediaPlayer player;
 
     // Group info
@@ -68,13 +73,12 @@ public class GroupSessionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_group_session);
 
         // Layout variables
+        gif = findViewById(R.id.background_gif);
         chatLayout = findViewById(R.id.chat);
         chatScroll = findViewById(R.id.chat_scroll);
         messageTxt = findViewById(R.id.message_text);
         peopleScroll = findViewById(R.id.people_list);
         peopleLayout = findViewById(R.id.people_list_layout);
-        link = findViewById(R.id.link);
-        addButton = findViewById(R.id.add_button);
         Button peopleButton = findViewById(R.id.people_button);
         peopleButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,11 +93,26 @@ public class GroupSessionActivity extends AppCompatActivity {
                 }
             }
         });
-        addButton.setOnClickListener(new View.OnClickListener() {
+
+        // Playing songs
+        songNameChoices = getResources().getStringArray(R.array.songs);
+        songNameView = findViewById(R.id.song_name);
+        nextSongButton = findViewById(R.id.next_button);
+        songNameView.setText(songNameChoices[0]);
+        playMusic();
+
+        nextSongButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String linkText = link.getText().toString();
-                playMusic(linkText);
+                // Increment index
+                songIdx++;
+                if(songIdx>=songNameChoices.length){
+                    songIdx = 0;
+                }
+                // Update display
+                songNameView.setText(songNameChoices[songIdx]);
+                // Play the song
+                playMusic();
             }
         });
 
@@ -153,8 +172,19 @@ public class GroupSessionActivity extends AppCompatActivity {
         });
 
         showMessages();
+        cycleBackgroundGifs();
     }
-    public void playMusic(String soundLink){
+    public void playMusic(){
+        // Cancel previous song
+        if(player!=null)
+            player.stop();
+        // Get the file name
+        String fileName = "song_"+songIdx;
+        // Play the song
+        player = MediaPlayer.create(this, getResources().getIdentifier(fileName, "raw", "com.wangjessica.taskmaster"));
+        player.start();
+    }
+    /*public void playMusic(String soundLink){
         soundLink = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
         player = new MediaPlayer();
         player.setAudioAttributes(
@@ -171,7 +201,8 @@ public class GroupSessionActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
+    public void cycleBackgroundGifs(){}
     public void showMessages(){
         chatRef.addChildEventListener(new ChildEventListener() {
             @Override
