@@ -71,7 +71,7 @@ public class GroupsActivity extends AppCompatActivity implements CreateGroupDial
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 // Create list of the groups
                 List<Group> groupsList = new ArrayList<Group>();
-                groupsList.add(new Group("Add Group", "", "", -1, -1));
+                groupsList.add(new Group("Add Group", "", "", -1, -1, 0));
 
                 // Add journals
                 Iterator iterator = snapshot.getChildren().iterator();
@@ -82,8 +82,9 @@ public class GroupsActivity extends AppCompatActivity implements CreateGroupDial
                     String userName = group.child("User").getValue().toString();
                     int capacity = Integer.parseInt(group.child("Capacity").getValue().toString());
                     int color = Integer.parseInt(group.child("Color").getValue().toString());
+                    int occupancy = Integer.parseInt(group.child("Occupancy").getValue().toString());
                     // Add in the group
-                    groupsList.add(new Group(groupName, userName, group.getKey(), capacity, color));
+                    groupsList.add(new Group(groupName, userName, group.getKey(), capacity, color, occupancy));
                 }
 
                 // Add to layout with adapter
@@ -126,6 +127,7 @@ public class GroupsActivity extends AppCompatActivity implements CreateGroupDial
         info.put("Name", title);
         info.put("User", userName);
         info.put("Capacity", capacity);
+        info.put("Occupancy", 0);
         info.put("Color", color);
         info.put(userName, "");
         groupsRef.child(nextGroupKey).setValue(info);

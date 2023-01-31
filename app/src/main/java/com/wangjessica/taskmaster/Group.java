@@ -5,17 +5,19 @@ public class Group {
     private String title;
     private String userName;
     private int capacity;
+    private int occupancy;
     private int color;
 
     // Firebase
     private String groupKey;
 
     // Constructor
-    public Group(String title, String userName, String groupKey, int capacity, int color){
+    public Group(String title, String userName, String groupKey, int capacity, int color, int occupancy){
         this.title = title;
         this.userName = userName;
         this.groupKey = groupKey;
         this.capacity = capacity;
+        this.occupancy = occupancy;
         this.color = color;
     }
 

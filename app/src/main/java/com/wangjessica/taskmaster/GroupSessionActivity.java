@@ -307,5 +307,6 @@ public class GroupSessionActivity extends AppCompatActivity {
         super.onDestroy();
         // Remove the user from the list of people in the session
         groupRef.child(myName).removeValue();
+        // TODO: groupRef.child("Occupancy").setValue( decrease by 1!)
     }
 }
