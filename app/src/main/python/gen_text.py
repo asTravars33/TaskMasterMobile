@@ -2,6 +2,23 @@ import numpy as np
 import tensorflow as tf
 import os
 
+vocab = [' ', '!', '"', "'", ',', '-', '.', '0', '1', '2', '3', '5', ':', '?', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'W', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+
+char_to_id_map = {}
+for i in range(len(vocab)):
+  char_to_id_map[bytes(vocab[i], 'utf-8')] = i+1
+
+def char_to_id(chars):
+  res = []
+  for char in chars.numpy():
+    res.append(char_to_id_map[char])
+  return tf.constant(np.array(res))
+
+def id_to_char(ids):
+  res = []
+  for id in ids:
+    res.append(bytes(vocab[id-1], 'utf-8'))
+  return tf.constant(np.array(res))
 
 def ids_to_text(ids):
   return tf.strings.reduce_join(id_to_char(ids), axis=-1)
@@ -31,6 +48,7 @@ class TextModel(tf.keras.Model):
       return x, states
     return x
 
+# Using the model to predict
 class Predictor(tf.keras.Model):
   def __init__(self, model, id_to_char, char_to_id, temperature=1.0):
     super().__init__()
@@ -42,7 +60,9 @@ class Predictor(tf.keras.Model):
   def generate_one_step(self, inputs, states=None):
     # Convert strings to token IDs.
     input_chars = tf.strings.unicode_split(inputs, 'UTF-8')
-    input_ids = self.char_to_id(input_chars).to_tensor()
+    #print(input_chars[0])
+    input_ids = tf.constant(np.array([self.char_to_id(input_chars[0]).numpy()]))
+    #print(input_ids)
 
     # Run the model.
     # predicted_logits.shape is [batch, char, next_char_logits]
@@ -63,10 +83,6 @@ class Predictor(tf.keras.Model):
     return predicted_chars, states
 
 def predict(prompt):
-    vocab = [' ', '!', '"', "'", ',', '-', '.', '0', '1', '2', '3', '5', ':', '?', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'W', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
-    char_to_id = tf.keras.layers.StringLookup(vocabulary=list(vocab), mask_token=None)
-    id_to_char = tf.keras.layers.StringLookup(vocabulary=char_to_id.get_vocabulary(), invert=True, mask_token=None)
-
     # Dataset
     seq_length=100
     BATCH_SIZE=64
@@ -76,9 +92,10 @@ def predict(prompt):
     embedding_dim=256
     rnn_units=1024
 
-    vocab_size = len(char_to_id.get_vocabulary())
+    vocab_size = len(vocab)+1
     model = TextModel(vocab_size = vocab_size, embedding_dim=embedding_dim, rnn_units=rnn_units)
 
+    checkpoint_path = join(dirname(__file__), 'training_checkpoints/cp.ckpt'
     model.load_weights(checkpoint_path)
 
     predictor = Predictor(model, id_to_char, char_to_id)

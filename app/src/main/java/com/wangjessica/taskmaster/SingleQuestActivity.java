@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -35,6 +36,11 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import pl.droidsonroids.gif.GifImageView;
 
 public class SingleQuestActivity extends AppCompatActivity {
@@ -116,10 +122,9 @@ public class SingleQuestActivity extends AppCompatActivity {
         }
 
         // Get the action items
-        //getActionItemsAndStartQuest("Random Preset");
-        // getSegment();
-        String type = intent.getStringExtra("type");
-        getActionItemsAndStartQuest(type);
+        getSegment();
+        /*String type = intent.getStringExtra("type");
+        getActionItemsAndStartQuest(type);*/
     }
     // Starting the overall quest
     public void startQuest(){
@@ -332,10 +337,30 @@ public class SingleQuestActivity extends AppCompatActivity {
         startQuest();
     }
     public void getSegment(){
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Request request = new Request.Builder().url("http://172.16.45.83:5000/").build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                taskDesc.setText("Uh it failed");
+                System.out.println(e.getStackTrace());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                System.out.println("Response: " + response.body().string());
+                taskDesc.setText(response.body().string());
+            }
+        });
+    }
+    public void getSegmentOLD(){
+        if(!Python.isStarted()){
+            Python.start(new AndroidPlatform(this));
+        }
         Python py = Python.getInstance();
         PyObject pyobj = py.getModule("gen_text");
         PyObject obj = null;
-        obj = pyobj.callAttr("get_image", "You begin your quest to find a rare diamond. ");
+        obj = pyobj.callAttr("predict", "You begin your quest to find a rare diamond. ");
         System.out.println(obj.toString());
     }
     // Save changes
