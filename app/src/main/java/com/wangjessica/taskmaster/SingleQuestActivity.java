@@ -1,8 +1,5 @@
 package com.wangjessica.taskmaster;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +9,9 @@ import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
@@ -31,7 +31,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -338,18 +337,19 @@ public class SingleQuestActivity extends AppCompatActivity {
     }
     public void getSegment(){
         OkHttpClient okHttpClient = new OkHttpClient();
-        Request request = new Request.Builder().url("http://172.16.45.83:5000/").build();
+        Request request = new Request.Builder().url("http://astravars33.pythonanywhere.com/").build();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 taskDesc.setText("Uh it failed");
-                System.out.println(e.getStackTrace());
+                System.out.println(e.toString());
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                System.out.println("Response: " + response.body().string());
-                taskDesc.setText(response.body().string());
+                String res = response.body().string();
+                System.out.println("Response: " + res);
+                taskDesc.setText(""+res);
             }
         });
     }
