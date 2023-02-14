@@ -107,7 +107,7 @@ public class GroupsActivity extends AppCompatActivity implements CreateGroupDial
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+ 
             }
         });
     }

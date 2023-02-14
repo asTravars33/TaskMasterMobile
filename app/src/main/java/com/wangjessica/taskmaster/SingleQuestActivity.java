@@ -34,6 +34,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -121,9 +122,9 @@ public class SingleQuestActivity extends AppCompatActivity {
         }
 
         // Get the action items
-        getSegment();
-        /*String type = intent.getStringExtra("type");
-        getActionItemsAndStartQuest(type);*/
+        // getSegment();
+        String type = intent.getStringExtra("type");
+        getActionItemsAndStartQuest(type);
     }
     // Starting the overall quest
     public void startQuest(){
@@ -160,7 +161,7 @@ public class SingleQuestActivity extends AppCompatActivity {
             // Show the task
             secondsLeft = (long)(times.get(i)*60);
             String[] nextThing = actionItems.get(i).split(";");
-            getImage(nextThing[0]);
+            //getImage(nextThing[0]);
             taskDesc.setText(Html.fromHtml(nextThing[0]+". <b>"+tasks.get(i)+"</b> for "+times.get(i)+" minutes to "+nextThing[1]+"!"));
             //taskDesc.setText(Html.fromHtml("Do <b>"+tasks.get(i)+"</b> for "+times.get(i)+" minutes to let the dream wake!"));
             Timer timer = new Timer();
@@ -287,6 +288,9 @@ public class SingleQuestActivity extends AppCompatActivity {
         else if(mode.equals("Template Quest")){
             getActionItemsAndStartQuestTemplate();
         }
+        else{
+            getActionItemsAndStartQuestAI();
+        }
     }
     public void getActionItemsAndStartQuestPreset(){
         actionItems = new ArrayList<String>();
@@ -335,8 +339,15 @@ public class SingleQuestActivity extends AppCompatActivity {
         // Begin the quest
         startQuest();
     }
+    public void getActionItemsAndStartQuestAI(){
+        getSegment();
+    }
     public void getSegment(){
-        OkHttpClient okHttpClient = new OkHttpClient();
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(50, TimeUnit.SECONDS)
+                .writeTimeout(50, TimeUnit.SECONDS)
+                .readTimeout(50, TimeUnit.SECONDS)
+                .build();
         Request request = new Request.Builder().url("http://astravars33.pythonanywhere.com/").build();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
@@ -348,8 +359,15 @@ public class SingleQuestActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 String res = response.body().string();
-                System.out.println("Response: " + res);
-                taskDesc.setText(""+res);
+                System.out.println(res);
+                String[] taskElems = res.split("\\. |\\? |! ");
+                actionItems = new ArrayList<String>();
+                for(String elem: taskElems){
+                    if(elem.length()>3 && !elem.substring(0, 2).equals("Go")){
+                        actionItems.add(elem+";"+"continue");
+                    }
+                }
+                startQuest();
             }
         });
     }
