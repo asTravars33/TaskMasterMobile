@@ -300,7 +300,6 @@ public class SingleQuestActivity extends AppCompatActivity {
                 Iterator iterator = snapshot.getChildren().iterator();
                 while(iterator.hasNext()){
                     actionItems.add(((DataSnapshot)iterator.next()).getKey());
-                    System.out.println(((DataSnapshot)iterator.next()).getKey());
                 }
                 startQuest();
             }
