@@ -177,8 +177,10 @@
         app:layout_constraintTop_toBottomOf="@id/name_field"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:ignore="OnClick" />
-
-    <include android:id="@+id/color_picker"
+    <LinearLayout
+        android:id="@+id/color_picker_layout"
+        android:visibility="gone"
+        android:background="@color/accent"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintWidth_percent="0.8"
@@ -188,5 +190,30 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:elevation="20dp"
-        layout="@layout/color_picker_profile"/>
+        android:weightSum="1"
+        android:orientation="vertical">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/color_picker"
+            android:background="@color/accent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.8" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_weight="0.2"
+            android:layout_height="0dp"
+            android:orientation="horizontal">
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:onClick="dismissColorPicker"
+                android:layout_weight="0.5"
+                android:text="OK" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:text="Generate" />
+        </LinearLayout>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
