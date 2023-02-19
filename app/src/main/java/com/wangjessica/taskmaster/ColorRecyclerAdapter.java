@@ -29,6 +29,7 @@ public class ColorRecyclerAdapter extends RecyclerView.Adapter<ColorRecyclerAdap
     @Override
     public void onBindViewHolder(ColorRecyclerAdapter.MyViewHolder holder, final int position) {
         final ColorSquare cur = colorList.get(position);
+        System.out.println(cur.getColor());
         holder.cardView.setBackgroundColor(Color.parseColor(cur.getColor()));
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override

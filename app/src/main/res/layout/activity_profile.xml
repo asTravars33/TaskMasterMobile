@@ -212,8 +212,9 @@
             <androidx.appcompat.widget.AppCompatButton
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:onClick="getMoreColors"
                 android:layout_weight="0.5"
-                android:text="Generate" />
+                android:text="Generate (-100)" />
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
