@@ -162,7 +162,7 @@ public class SingleQuestActivity extends AppCompatActivity implements PromptDial
             // Show the task
             secondsLeft = (long)(times.get(i)*60);
             String[] nextThing = actionItems.get(i).split(";");
-            //getImage(nextThing[0]);
+            getImage(nextThing[0]);
             taskDesc.setText(Html.fromHtml(nextThing[0]+". <b>"+tasks.get(i)+"</b> for "+times.get(i)+" minutes to "+nextThing[1]+"!"));
             //taskDesc.setText(Html.fromHtml("Do <b>"+tasks.get(i)+"</b> for "+times.get(i)+" minutes to let the dream wake!"));
             Timer timer = new Timer();
