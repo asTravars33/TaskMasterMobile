@@ -47,6 +47,7 @@ public class PromptDialogFragment extends DialogFragment {
                 String[] prompts = new String[] {"You begin your quest to slay a dragon. ", "You begin your quest to find a diamond. "};
                 String curPrompt = prompts[(int)(Math.random()*prompts.length)];
                 listener.onDialogPositiveClick(curPrompt);
+                dismiss();
             }
         });
         // Create the AlertDialog object and return it
