@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <TextView
+        android:id="@+id/title"
+        android:text="Prompt"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:textSize="20sp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/edit_prompt"/>
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.4"
+        android:layout_height="wrap_content"
+        android:onClick="randomPrompt"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintBottom_toTopOf="@id/edit_prompt"
+        android:id="@+id/gen_random"
+        android:text="Random" />
+    <EditText
+        android:id="@+id/edit_prompt"
+        android:layout_width="0dp"
+        android:padding="6dp"
+        android:hint="Enter Your Prompt: "
+        android:background="@drawable/inputs"
+        app:layout_constraintWidth_percent="0.85"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gen_random"
+        app:layout_constraintBottom_toBottomOf="parent">
+    </EditText>
+</androidx.constraintlayout.widget.ConstraintLayout>

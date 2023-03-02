@@ -1,5 +1,6 @@
 package com.wangjessica.taskmaster;
 
+import android.app.VoiceInteractor;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -43,7 +44,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import pl.droidsonroids.gif.GifImageView;
 
-public class SingleQuestActivity extends AppCompatActivity {
+public class SingleQuestActivity extends AppCompatActivity implements PromptDialogFragment.StartQuestListener {
 
     // Layout components
     private GifImageView gifView;
@@ -339,36 +340,42 @@ public class SingleQuestActivity extends AppCompatActivity {
         startQuest();
     }
     public void getActionItemsAndStartQuestAI(){
-        getSegment();
+        PromptDialogFragment fragment = new PromptDialogFragment();
+        fragment.setCancelable(true);
+        fragment.show(getSupportFragmentManager(), "User Prompt");
     }
-    public void getSegment(){
+    @Override
+    public void onDialogPositiveClick(String prompt) {
+        getSegment(prompt);
+    }
+    public void getSegment(String prompt){
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(50, TimeUnit.SECONDS)
                 .writeTimeout(50, TimeUnit.SECONDS)
                 .readTimeout(50, TimeUnit.SECONDS)
                 .build();
-        Request request = new Request.Builder().url("http://astravars33.pythonanywhere.com/").build();
-        okHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                taskDesc.setText("Uh it failed");
-                System.out.println(e.toString());
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                String res = response.body().string();
-                System.out.println(res);
-                String[] taskElems = res.split("\\. |\\? |! ");
-                actionItems = new ArrayList<String>();
-                for(String elem: taskElems){
-                    if(elem.length()>3 && !elem.substring(0, 2).equals("Go")){
-                        actionItems.add(elem+";"+"continue");
+        Request request = new Request.Builder().url("http://astravars33.pythonanywhere.com/gentext?prompt="+prompt).build();
+                okHttpClient.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                        taskDesc.setText("Uh it failed");
+                        System.out.println(e.toString());
                     }
-                }
-                startQuest();
-            }
-        });
+
+                    @Override
+                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                        String res = response.body().string();
+                        System.out.println(res);
+                        String[] taskElems = res.split("\\. |\\? |! ");
+                        actionItems = new ArrayList<String>();
+                        for(String elem: taskElems){
+                            if(elem.length()>3 && !elem.substring(0, 2).equals("Go")){
+                                actionItems.add(elem+";"+"continue");
+                            }
+                        }
+                        startQuest();
+                    }
+                });
     }
     public void getSegmentOLD(){
         if(!Python.isStarted()){
