@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -86,6 +87,7 @@ public class SingleQuestActivity extends AppCompatActivity implements PromptDial
         timerView = findViewById(R.id.timer);
         questImg = findViewById(R.id.image_view);
         doneButton = findViewById(R.id.done_button);
+        taskDesc.setMovementMethod(new ScrollingMovementMethod());
 
         // Firebase variables
         rootRef = FirebaseDatabase.getInstance().getReference();
@@ -164,6 +166,7 @@ public class SingleQuestActivity extends AppCompatActivity implements PromptDial
             String[] nextThing = actionItems.get(i).split(";");
             getImage(nextThing[0]);
             taskDesc.setText(Html.fromHtml(nextThing[0]+". <b>"+tasks.get(i)+"</b> for "+times.get(i)+" minutes to "+nextThing[1]+"!"));
+
             //taskDesc.setText(Html.fromHtml("Do <b>"+tasks.get(i)+"</b> for "+times.get(i)+" minutes to let the dream wake!"));
             Timer timer = new Timer();
             timer.scheduleAtFixedRate(new TimerTask() {

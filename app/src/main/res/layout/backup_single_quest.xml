@@ -16,7 +16,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/task_desc"/>
+        app:layout_constraintBottom_toTopOf="@id/task_desc_scroll"/>
     <ImageView
         android:id="@+id/image_view"
         android:layout_width="0dp"
@@ -39,22 +39,26 @@
         app:layout_constraintHeight_percent="0.2"
         app:layout_constraintRight_toRightOf="@id/gif_view"
         app:layout_constraintBottom_toBottomOf="@id/gif_view" />
-    <TextView
-        android:id="@+id/task_desc"
+    <ScrollView
+        android:id="@+id/task_desc_scroll"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/main"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:padding="15dp"
-        android:textColor="@color/white"
-        android:scrollbars="vertical"
         app:layout_constraintWidth_percent="0.8"
         app:layout_constraintHeight_percent="0.2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/gif_view"
-        app:layout_constraintBottom_toTopOf="@id/buttons"/>
+        app:layout_constraintBottom_toTopOf="@id/buttons">
+        <TextView
+            android:id="@+id/task_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:padding="15dp"
+            android:textColor="@color/white"/>
+    </ScrollView>
     <LinearLayout
         android:id="@+id/buttons"
         android:layout_width="0dp"
@@ -63,7 +67,7 @@
         app:layout_constraintHeight_percent="0.12"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/task_desc"
+        app:layout_constraintTop_toBottomOf="@id/task_desc_scroll"
         app:layout_constraintBottom_toBottomOf="parent"
         android:orientation="horizontal"
         android:weightSum="1">
