@@ -77,7 +77,6 @@ public class RegisterActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 userId = auth.getCurrentUser().getUid();
                 addUserProfile();
-                System.out.println("finished");
                 Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                 startActivity(intent);
             }
