@@ -357,7 +357,18 @@ public class SingleQuestActivity extends AppCompatActivity implements PromptDial
                 .writeTimeout(50, TimeUnit.SECONDS)
                 .readTimeout(50, TimeUnit.SECONDS)
                 .build();
-        Request request = new Request.Builder().url("http://astravars33.pythonanywhere.com/gentext?prompt="+prompt).build();
+        String example = "You go on a quest to find a rare diamond. You stort becoming very thirsty. but you decide to dun because you know you will die if you dont find water.You choose the correctrip through the forest. you listen to the sounds of nature and think about your quest ahead. Keep going straiget. The creature falls down and dies in great pain. You see and oasis and you know you have fare. ";
+        String res = example;
+        System.out.println(res);
+        String[] taskElems = res.split("\\. |\\? |! ");
+        actionItems = new ArrayList<String>();
+        for(String elem: taskElems){
+            if(elem.length()>3 && !elem.substring(0, 2).equals("Go")){
+                actionItems.add(elem+";"+"continue");
+            }
+        }
+        startQuest();
+        /*Request request = new Request.Builder().url("http://astravars33.pythonanywhere.com/gentext?prompt="+prompt).build();
                 okHttpClient.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -378,7 +389,7 @@ public class SingleQuestActivity extends AppCompatActivity implements PromptDial
                         }
                         startQuest();
                     }
-                });
+                });*/
     }
     public void getSegmentOLD(){
         if(!Python.isStarted()){
