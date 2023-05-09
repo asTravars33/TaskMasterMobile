@@ -357,7 +357,7 @@ public class SingleQuestActivity extends AppCompatActivity implements PromptDial
                 .writeTimeout(50, TimeUnit.SECONDS)
                 .readTimeout(50, TimeUnit.SECONDS)
                 .build();
-        startQuest();
+        System.out.println("Prompt:"+prompt);
         Request request = new Request.Builder().url("http://astravars33.pythonanywhere.com/gentext?prompt="+prompt).build();
                 okHttpClient.newCall(request).enqueue(new Callback() {
                     @Override
